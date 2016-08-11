@@ -18,7 +18,7 @@ public class UserServiceStubImpl implements UserService{
 
     @Override
     public boolean authenticate(String username, String password) {
-        //TODO: check the password
+        //TODO: check the password correctly with Spring Security
         return Objects.equals(username, password);
     }
 
@@ -34,5 +34,34 @@ public class UserServiceStubImpl implements UserService{
         return this.users.stream()
                 .filter(u -> Objects.equals(u.getUsername(), username))
                 .findFirst().orElse(null);
+    }
+
+    @Override
+    public User create(User user) {
+        user.setId(this.users.stream().mapToLong(u -> u.getId()).max().getAsLong() + 1);
+        this.users.add(user);
+        return user;
+    }
+
+    @Override
+    public User edit(User user) {
+        for (int i = 0; i < this.users.size(); i++) {
+            if(Objects.equals(this.users.get(i).getId(), user.getId())) {
+                this.users.set(i, user);
+                return user;
+            }
+        }
+        throw new RuntimeException("User not found: " + user.getId());
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        for (int i = 0; i < this.users.size(); i++) {
+            if(Objects.equals(this.users.get(i).getId(), id)) {
+                this.users.remove(i);
+                return;
+            }
+        }
+        throw new RuntimeException("User not found: " + id);
     }
 }

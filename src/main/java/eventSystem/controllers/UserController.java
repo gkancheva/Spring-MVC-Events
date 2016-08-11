@@ -1,6 +1,7 @@
 package eventSystem.controllers;
 
 import eventSystem.forms.LoginForm;
+import eventSystem.forms.RegisterForm;
 import eventSystem.services.NotificationService;
 import eventSystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,22 @@ public class UserController {
         }
         notServ.addInfoMessage("Login successful!");
         m.addAttribute("user", userServ.findByUsername(lf.getUsername()));
+        return "redirect:/";
+    }
+
+    @RequestMapping("/users/register")
+    public String registerPage(RegisterForm registerForm) {
+        return "users/register";
+    }
+
+    @RequestMapping(value = "/users/login", method = RequestMethod.POST)
+    public String registerPage(@Valid RegisterForm rf, BindingResult br, Model m) {
+        if(br.hasErrors()) {
+            notServ.addErrorMessage("Please fill the form correctly");
+            return "users/register";
+        }
+
+        notServ.addInfoMessage("Register successful!");
         return "redirect:/";
     }
 }
