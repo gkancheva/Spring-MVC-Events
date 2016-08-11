@@ -20,8 +20,12 @@ public class HomeController {
     public String index(Model m) {
         List<Event> upcoming5events = eventService.findUpcoming5();
         m.addAttribute("upcoming5events", upcoming5events);
-        List<Event> upcoming3events = upcoming5events.stream().limit(3).collect(Collectors.toList());
+        List<Event> upcoming3events = upcoming5events.stream()
+                .limit(3).collect(Collectors.toList());
         m.addAttribute("upcoming3events", upcoming3events);
+        List<Event> past3Events = eventService.findPast5Events().stream()
+                .limit(3).collect(Collectors.toList());
+        m.addAttribute("past3events", past3Events);
         return "index";
     }
 }

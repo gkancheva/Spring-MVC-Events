@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventServiceStubImpl implements EventService{
+    //TODO: check why the date is not printed correctly; Date class - deprecated
     private List<Event> events = new ArrayList<Event>() {{
-        add(new Event(1L, "Title 1st event", "Description 1st Event", new Date(2016-10-20), "Some address", new User(1l, "Pesho", "Pesho123", "Pesho Peshev"), true));
-        add(new Event(1L, "Title 2nd event", "Description 2nd Event", new Date(2016-10-25), "Some address", new User(2l, "Maria", "Maria123", "Maria Petrova"), true));
+        add(new Event(1L, "Title 1st event", "Description 1st Event", new Date((2016 - 1900), (10 - 1), 20), "Some address", new User(1l, "Pesho", "Pesho123", "Pesho Peshev"), true));
+        add(new Event(2L, "Title 2nd event", "Description 2nd Event", new Date((2016 - 1900), (12 - 1), 20), "Some bar", new User(2l, "Maria", "Maria123", "Maria Petrova"), true));
+        add(new Event(3L, "Title 3rd event", "Description 3rd Event", new Date((2016 - 1900), (6 - 1), 15), "Some location", new User(3l, "Gergana", "Gery123", "Gergana Kancheva"), true));
     }};
 
     @Override
@@ -26,6 +28,15 @@ public class EventServiceStubImpl implements EventService{
     public List<Event> findUpcoming5() {
         return this.events.stream()
                 .sorted((a, b) -> a.getDate().compareTo(b.getDate()))
+                .filter(e -> e.getDate().after(new Date()))
+                .limit(5).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> findPast5Events() {
+        return this.events.stream()
+                .sorted((a, b) -> b.getDate().compareTo(a.getDate()))
+                .filter(e -> e.getDate().before(new Date()))
                 .limit(5).collect(Collectors.toList());
     }
 

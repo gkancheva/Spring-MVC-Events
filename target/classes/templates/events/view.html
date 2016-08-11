@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout :: site-head">
+    <title th:text="${event.title}">View event details</title>
+</head>
+
+<body>
+<header th:replace="layout :: site-header" />
+
+<main id="events">
+    <article>
+        <h2 class="title" th:text="${event.title}">Event Title</h2>
+        <div class="date">
+            <i>Date of the event:</i>
+            <span th:text="${#dates.format(event.date, 'dd-MMM-yyyy')}">22-May-2016</span>
+        </div>
+        <div class="location">
+            <i>Location:</i>
+            <span th:text="${event.location}">Some location</span>
+        </div>
+        <p class="content" th:utext="${event.description}">Event description</p>
+    </article>
+</main>
+
+<footer th:replace="layout :: site-footer" />
+</body>
+
+</html>
