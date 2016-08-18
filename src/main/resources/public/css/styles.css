@@ -60,13 +60,15 @@ ul#messages li.error {
 }
 
 table th {
-    background: #AAA;
+    background: #CCC;
     font-size: 1.2em;
+    padding: 5px;
 }
 
 table td {
     text-align: left;
-    background: #DDD;
+    background: #EEE;
+    padding: 5px;
 }
 
 body>footer {
