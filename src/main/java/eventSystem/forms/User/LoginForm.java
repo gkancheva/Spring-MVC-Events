@@ -1,4 +1,4 @@
-package eventSystem.forms;
+package eventSystem.forms.User;
 
 import javax.validation.constraints.Size;
 import javax.validation.constraints.NotNull;

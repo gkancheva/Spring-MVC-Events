@@ -1,13 +1,31 @@
 package eventSystem.models;
 
+import org.springframework.boot.autoconfigure.web.ResourceProperties;
+
+import javax.persistence.*;
 import java.util.Date;
 
+//@Entity
+//@Table(name = "events")
 public class Event {
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //@Column(nullable = false, length = 30)
     private String title;
+
+    //@Column(nullable = false)
     private String description;
+
+    //@Lob
+    //@Column(nullable = false)
     private Date date = new Date();
+
+    //@Column(nullable = false)
     private String location;
+
+    //@ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
     private boolean isPublic;
 

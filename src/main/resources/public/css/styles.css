@@ -40,7 +40,7 @@ ul#messages li {
     width: 80%;
     margin: 5px auto;
     text-align: center;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 5px;
 }
 
@@ -57,6 +57,16 @@ ul#messages li.error {
     color: #d00;
     font-style: italic;
     font-size: 0.9em;
+}
+
+table th {
+    background: #AAA;
+    font-size: 1.2em;
+}
+
+table td {
+    text-align: left;
+    background: #DDD;
 }
 
 body>footer {

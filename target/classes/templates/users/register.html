@@ -26,10 +26,10 @@
         <span class="formError" th:if="${#fields.hasErrors('password')}"
               th:errors="*{password}">Invalid password</span>
     </div>
-    <div><label for="password" th:value="*{username}">Retype password:</label></div>
-    <div><input id="password" type="password" name="password" th:value="*{password}" />
-        <span class="formError" th:if="${#fields.hasErrors('password')}"
-              th:errors="*{password}">Invalid password</span>
+    <div><label for="retypePassword" th:value="*{username}">Retype password:</label></div>
+    <div><input id="retypePassword" type="password" name="retypePassword" th:value="*{retypePassword}" />
+        <span class="formError" th:if="${#fields.hasErrors('retypePassword')}"
+              th:errors="*{retypePassword}">Invalid password</span>
     </div>
     <div><input type="submit" value="Register"/>
         <a href="login.html" th:href="@{/users/login}">[Go to Login]</a></div>

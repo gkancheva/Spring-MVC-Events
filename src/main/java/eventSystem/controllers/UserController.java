@@ -1,7 +1,8 @@
 package eventSystem.controllers;
 
-import eventSystem.forms.LoginForm;
-import eventSystem.forms.RegisterForm;
+import eventSystem.forms.User.LoginForm;
+import eventSystem.forms.User.RegisterForm;
+import eventSystem.models.User;
 import eventSystem.services.NotificationService;
 import eventSystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @Controller
 public class UserController {
@@ -46,13 +48,18 @@ public class UserController {
         return "users/register";
     }
 
-    @RequestMapping(value = "/users/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     public String registerPage(@Valid RegisterForm rf, BindingResult br, Model m) {
+        //TODO: Check register form
         if(br.hasErrors()) {
             notServ.addErrorMessage("Please fill the form correctly");
             return "users/register";
         }
-
+        if(!Objects.equals(rf.getPassword(), rf.getRetypePassword())) {
+            notServ.addErrorMessage("The password does not match. Please try again.");
+            return "users/register";
+        }
+        User user = new User();
         notServ.addInfoMessage("Register successful!");
         return "redirect:/";
     }
