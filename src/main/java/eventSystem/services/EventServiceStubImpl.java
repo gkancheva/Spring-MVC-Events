@@ -16,7 +16,9 @@ public class EventServiceStubImpl implements EventService{
     private List<Event> events = new ArrayList<Event>() {{
         add(new Event(1L, "Title 1st event", "Description 1st Event", new Date((2016 - 1900), (10 - 1), 20), "Some address", new User(1l, "Pesho", "Pesho123", "Pesho Peshev"), true));
         add(new Event(2L, "Title 2nd event", "Description 2nd Event", new Date((2016 - 1900), (12 - 1), 20), "Some bar", new User(2l, "Maria", "Maria123", "Maria Petrova"), true));
-        add(new Event(3L, "Title 3rd event", "Description 3rd Event", new Date((2016 - 1900), (6 - 1), 15), "Some location", new User(3l, "Gergana", "Gery123", "Gergana Kancheva"), true));
+        add(new Event(3L, "Title 3rd event", "Description 3rd Event", new Date((2016 - 1900), (6 - 1), 15), "Some location", new User(3l, "Ger", "Gery123", "Gergana Kancheva"), true));
+        add(new Event(4L, "Title 4nd event", "Description 4rd Event", new Date((2017 - 1900), (3 - 1), 2), "Some bar", new User(4l, "Maria1", "Maria123", "Maria Petrova"), true));
+        add(new Event(5L, "Title 5th event", "Description 5th Event", new Date((2016 - 1900), (6 - 1), 13), "Some location", new User(5l, "Gera", "Gery123", "Gergana Kancheva"), true));
     }};
 
     @Override

@@ -8,22 +8,24 @@
 <body>
 <header th:replace="layout :: site-header" />
 
-<h1>Login details</h1>
+<h2>Login details</h2>
 
-<form method="post" th:object="${loginForm}">
-    <div><label for="username">Username:</label></div>
-    <div><input id="username" type="text" name="username" th:value="*{username}" />
-        <span class="formError" th:if="${#fields.hasErrors('username')}"
-              th:errors="*{username}">Invalid username</span>
-    </div>
-    <div><label for="password" th:value="*{username}">Password:</label></div>
-    <div><input id="password" type="password" name="password" th:value="*{password}" />
-        <span class="formError" th:if="${#fields.hasErrors('password')}"
-              th:errors="*{password}">Invalid password</span>
-    </div>
-    <div><input type="submit" value="Login"/>
-        <a href="register.html" th:href="@{/users/register}">[Go to Register]</a></div>
-</form>
+<div class="single-element">
+    <form method="post" th:object="${loginForm}">
+        <div><label for="username">Username:</label></div>
+        <div><input id="username" type="text" name="username" th:value="*{username}" />
+            <span class="formError" th:if="${#fields.hasErrors('username')}"
+                  th:errors="*{username}">Invalid username</span>
+        </div>
+        <div><label for="password" th:value="*{username}">Password:</label></div>
+        <div><input id="password" type="password" name="password" th:value="*{password}" />
+            <span class="formError" th:if="${#fields.hasErrors('password')}"
+                  th:errors="*{password}">Invalid password</span>
+        </div>
+        <div><input type="submit" value="Login"/>
+            <a href="register.html" th:href="@{/users/register}">[Go to Register]</a></div>
+    </form>
+</div>
 
 <footer th:replace="layout :: site-footer" />
 </body>
