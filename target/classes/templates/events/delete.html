@@ -19,7 +19,7 @@
             <div><input id="date" type="text" name="date" th:value="${#dates.format(event.date, 'dd-MMM-yyyy')}"/></div>
 
             <label for="location">Event location:</label>
-            <div><input id="location" type="text" name="title" th:value="${event.location}"/></div>
+            <div><input id="location" type="text" name="location" th:value="${event.location}"/></div>
 
             <div><input type="submit" id="delete" value="Delete"/>
                 <a href="index.html" th:href="@{/events}">[Cancel]</a>

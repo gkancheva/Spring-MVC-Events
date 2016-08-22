@@ -50,7 +50,7 @@ public class UserController {
 
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     public String registerPage(@Valid RegisterForm rf, BindingResult br, Model m) {
-        //TODO: Check register form
+        //TODO: Check register form/ hash the password
         if(br.hasErrors()) {
             notServ.addErrorMessage("Please fill the form correctly");
             return "users/register";
@@ -60,6 +60,9 @@ public class UserController {
             return "users/register";
         }
         User user = new User();
+        user.setFullName(rf.getFullName());
+        user.setUsername(rf.getUsername());
+        user.setPasswordHash(rf.getPassword());
         notServ.addInfoMessage("Register successful!");
         return "redirect:/";
     }

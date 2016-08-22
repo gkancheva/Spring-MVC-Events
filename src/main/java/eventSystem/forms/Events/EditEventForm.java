@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-public class CreateNewEventForm {
+public class EditEventForm {
     @NotNull
     @Size(min = 2, max = 300, message = "Title of the event should be between 2 and 300 characters.")
     private String title;
@@ -23,7 +23,16 @@ public class CreateNewEventForm {
     @NotNull
     private String location;
 
+    @NotNull
     private User author;
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
 
     public String getTitle() {
         return title;
@@ -55,13 +64,5 @@ public class CreateNewEventForm {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
     }
 }
