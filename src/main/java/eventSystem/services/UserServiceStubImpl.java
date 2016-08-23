@@ -1,6 +1,7 @@
 package eventSystem.services;
 
 import eventSystem.models.User;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,11 +11,10 @@ import java.util.Objects;
 @Service
 public class UserServiceStubImpl implements UserService{
     private List<User> users = new ArrayList<User>() {{
-        add(new User(1l, "Pesho", "Pesho123", "Pesho Peshev"));
-        add(new User(2l, "Maria", "Maria123", "Maria Petrova"));
-        add(new User(3l, "Gergana", "Gery123", "Gergana Kancheva"));
+        add(new User(1l, "Pesho", "Pesho123", "pesho@pesho.com", "Pesho Peshev"));
+        add(new User(2l, "Maria", "Maria123", "maria@maria.com", "Maria Petrova"));
+        add(new User(3l, "Gergana", "Gery123", "gergana@gergana.com","Gergana Kancheva"));
     }};
-
 
     @Override
     public boolean authenticate(String username, String password) {
@@ -23,16 +23,14 @@ public class UserServiceStubImpl implements UserService{
     }
 
     @Override
-    public User findById(Long id) {
-        return this.users.stream()
-                .filter(e -> Objects.equals(e.getId(), id))
-                .findFirst().orElse(null);
+    public List<User> findAll() {
+        return users;
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User findById(Long id) {
         return this.users.stream()
-                .filter(u -> Objects.equals(u.getUsername(), username))
+                .filter(e -> Objects.equals(e.getId(), id))
                 .findFirst().orElse(null);
     }
 
@@ -55,7 +53,7 @@ public class UserServiceStubImpl implements UserService{
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteById(Long id) {
         for (int i = 0; i < this.users.size(); i++) {
             if(Objects.equals(this.users.get(i).getId(), id)) {
                 this.users.remove(i);

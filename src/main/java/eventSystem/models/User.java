@@ -4,32 +4,43 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-//@Entity
-//@Table(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = false, length = 30, unique = true)
     private String username;
 
-    //@Column(nullable = false, length = 60)
+    @Column(nullable = false, length = 60)
     private String passwordHash;
 
-    //@Column(nullable = false, length = 100)
+    @Column(nullable = false)
+    private String eMail;
+
+    @Column(nullable = false, length = 100)
     private String fullName;
 
-    //@OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author")
     private Set<Event> events = new HashSet<>();
 
     public User() {
     }
 
-    public User(Long id, String username, String passwordHash, String fullName) {
+    public User(String username, String passwordHash, String eMail, String fullName) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.eMail = eMail;
+        this.fullName = fullName;
+    }
+
+    public User(Long id, String username, String passwordHash, String eMail, String fullName) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
+        this.eMail = eMail;
         this.fullName = fullName;
     }
 
@@ -73,11 +84,20 @@ public class User {
         this.events = events;
     }
 
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", eMail='" + eMail + '\'' +
                 ", fullName='" + fullName + '\'' +
                 '}';
     }

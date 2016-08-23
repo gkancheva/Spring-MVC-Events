@@ -7,6 +7,9 @@ public class RegisterForm {
     @Size(min=2, max=30, message = "Username size should be in the range [2...30]")
     private String username;
 
+    @Size(min = 2, message = "Email not correct")
+    private String eMail;
+
     @NotNull
     @Size(min=1, max=50)
     private String password;
@@ -49,5 +52,13 @@ public class RegisterForm {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
     }
 }

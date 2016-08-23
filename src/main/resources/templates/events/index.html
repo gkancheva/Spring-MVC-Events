@@ -20,12 +20,11 @@
                 </thead>
                 <tbody>
                 <tr th:each="e : ${allUpcomingEvents}">
-                    <td><span th:text="${e.title}"></span></td>
-                    <td><span th:text="${e.description}"></span></td>
+                    <td><span th:text="${e.title}">Title</span></td>
+                    <td><a href="#" th:href="@{/events/view/{id}/(id=${e.id})}" th:text="${#strings.substring(e.description, 0, 150)} + '...'">Description</a></td>
                     <td><span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span></td>
                     <td><span th:text="${e.location}"></span></td>
                     <td>
-                        <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">[View]</a>
                         <a href="#" th:href="@{/events/delete/{id}/(id=${e.id})}">[Delete]</a>
                         <a href="#" th:href="@{/events/edit/{id}/(id=${e.id})}">[Edit]</a>
                     </td>
@@ -45,8 +44,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="e : ${allPastEvents}">
-                    <td><span th:text="${e.title}"></span></td>
-                    <td><span th:text="${e.description}"></span></td>
+                    <td><span th:text="${e.title}">Title</span></td>
+                    <td><a href="#" th:href="@{/events/view/{id}/(id=${e.id})}" th:text="${#strings.substring(e.description, 0, 150)} + '...'">Description</a></td>
                     <td><span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span></td>
                     <td><span th:text="${e.location}"></span></td>
                     <td>

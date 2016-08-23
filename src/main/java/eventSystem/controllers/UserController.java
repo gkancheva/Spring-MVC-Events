@@ -39,7 +39,6 @@ public class UserController {
             return "users/login";
         }
         notServ.addInfoMessage("Login successful!");
-        m.addAttribute("user", userServ.findByUsername(lf.getUsername()));
         return "redirect:/";
     }
 
@@ -63,6 +62,7 @@ public class UserController {
         user.setFullName(rf.getFullName());
         user.setUsername(rf.getUsername());
         user.setPasswordHash(rf.getPassword());
+        user.seteMail(rf.geteMail());
         notServ.addInfoMessage("Register successful!");
         return "redirect:/";
     }

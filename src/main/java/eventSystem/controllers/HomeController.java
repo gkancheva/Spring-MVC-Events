@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,12 +19,13 @@ public class HomeController {
 
     @RequestMapping("/")
     public String index(Model m) {
-        List<Event> upcoming5events = eventService.findUpcoming5();
-        m.addAttribute("upcoming5events", upcoming5events);
-        List<Event> upcoming3events = upcoming5events.stream()
-                .limit(3).collect(Collectors.toList());
-        m.addAttribute("upcoming3events", upcoming3events);
-        List<Event> past3Events = eventService.findPast5Events().stream()
+        Date today = new Date();
+        List<Event> upcomingEvents = eventService.findUpcoming();
+        m.addAttribute("allUpcomingEvents", upcomingEvents);
+        List<Event> upcoming3events = upcomingEvents.stream()
+                .limit(5).collect(Collectors.toList());
+        m.addAttribute("upcoming5events", upcoming3events);
+        List<Event> past3Events = eventService.findPast().stream()
                 .limit(3).collect(Collectors.toList());
         m.addAttribute("past3events", past3Events);
         return "index";

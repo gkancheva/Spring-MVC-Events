@@ -8,14 +8,14 @@
 <body>
     <header th:replace="layout :: site-header" />
     <aside>
-        <h2>Upcoming Events</h2>
-        <a href="#" th:each="e : ${upcoming5events}" th:text="${e.title}"
+        <h2>All Upcoming Events</h2>
+        <a href="#" th:each="e : ${allUpcomingEvents}" th:text="${e.title}"
            th:href="@{/events/view/{id}/(id=${e.id})}">Event title</a>
     </aside>
 
     <main id="events">
         <h2>Upcoming events</h2>
-        <article th:each="e : ${upcoming3events}">
+        <article th:each="e : ${upcoming5events}">
             <h3 class="title" th:text="${e.title}">Event Title</h3>
             <div class="date">
                 <i>Date of event:</i>
@@ -25,7 +25,10 @@
                 <i>Location:</i>
                 <span th:text="${e.location}">Event location</span>
             </div>
-            <p class="content" th:utext="${e.description}">Event description</p>
+            <p class="content">
+                <span th:text="${#strings.substring(e.description, 0, 300)} + '...'">Description</span>
+                <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">Read more</a>
+            </p>
         </article>
 
         <h2>Past events</h2>

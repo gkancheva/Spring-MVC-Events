@@ -25,10 +25,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class EventController {
-
     @Autowired
     private UserService userService;
-
 
     @Autowired
     private EventService eventService;
@@ -50,7 +48,7 @@ public class EventController {
     @RequestMapping("/events")
     public String showAllEvents(Model m) {
         Date today = new Date();
-        List<Event> allEvents = eventService.findAll();
+        List<Event> allEvents = eventService.findOrdered();
         List<Event> allUpcomingEvents = allEvents
                 .stream()
                 .filter(e -> e.getDate().after(today))
@@ -67,7 +65,7 @@ public class EventController {
     @RequestMapping("/events/create")
     public String showCreateEventPage(CreateNewEventForm createNewEventForm) {
         //ToDo: Take the user from the session
-        User user = new User(6l, "Proben", "Proben123", "Proben Probev");
+        User user = new User(6l, "Proben", "Proben123", "proben@proben.com","Proben Probev");
         createNewEventForm.setAuthor(user);
         return "events/create";
     }

@@ -1,33 +1,36 @@
 package eventSystem.models;
 
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
 
-//@Entity
-//@Table(name = "events")
+@Entity
+@Table(name = "events")
 public class Event {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 300)
     private String title;
 
-    //@Column(nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String description;
 
-    //@Lob
-    //@Column(nullable = false)
+    @Column(nullable = false)
     private Date date = new Date();
 
-    //@Column(nullable = false)
+    @Column(nullable = false)
     private String location;
 
-    //@ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
-    private boolean isPublic;
+
+    @Column(nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean isPublic = true;
 
     public Event() {
     }
