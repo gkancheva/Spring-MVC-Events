@@ -13,7 +13,7 @@ body>header>a>img, body>header a  {
 body>aside {
     float: right;
     width: 200px;
-    background: #CCC;
+    background: #EEE;
     padding: 15px;
     margin-left: 20px;
     margin-top: 10px;
@@ -33,6 +33,10 @@ body>main:after {
     content: '';
     display: block;
     clear: both;
+}
+
+body>main>h2 {
+    background: #EEE;
 }
 
 ul#messages li {

@@ -65,8 +65,6 @@ public class EventController {
     @RequestMapping("/events/create")
     public String showCreateEventPage(CreateNewEventForm createNewEventForm) {
         //ToDo: Take the user from the session
-        User user = new User(6l, "Proben", "Proben123", "proben@proben.com","Proben Probev");
-        createNewEventForm.setAuthor(user);
         return "events/create";
     }
 
@@ -82,8 +80,10 @@ public class EventController {
         event.setDescription(cf.getDescription());
         event.setDate(cf.getDate());
         event.setLocation(cf.getLocation());
-        event.setAuthor(cf.getAuthor());
+        event.setAuthor(userService.findById((long)7));
+        event.setPublic(true);
         eventService.create(event);
+        notServ.addInfoMessage("Event with id #" + event.getId() + " was successfully created.");
         return "redirect:/events";
     }
 
@@ -105,30 +105,39 @@ public class EventController {
         return ("redirect:/events");
     }
 
-    @RequestMapping("events/edit/{id}")
-    public String showEditPage(@PathVariable ("id") Long id, Model m) {
+    @RequestMapping(value = "/events/edit/{id}", method = RequestMethod.GET)
+    public String showEditPage(@PathVariable ("id") Long id, Model m, EditEventForm editEventForm) {
         Event event = eventService.findById(id);
         if(event == null) {
-            notServ.addErrorMessage("Cannot find event with id#" + id);
+            notServ.addErrorMessage("Cannot find event with id #" + id);
             return "redirect:/events";
         }
         m.addAttribute("event", event);
+        editEventForm.setAuthor(event.getAuthor());
+        editEventForm.setTitle(event.getTitle());
+        editEventForm.setDescription(event.getDescription());
+        editEventForm.setDate(event.getDate());
+        editEventForm.setLocation(event.getLocation());
         return ("events/edit");
     }
 
     @RequestMapping(value = "events/edit/{id}", method = RequestMethod.POST)
     public String editEvent(@PathVariable ("id") Long id, @Valid EditEventForm ef, BindingResult br) {
+        //TODO: 23.8.2016 г. : get author
         if(br.hasErrors()) {
             notServ.addErrorMessage("Please fill the form correctly");
             return "events/edit";
         }
         Event event = new Event();
+        event.setId(id);
         event.setTitle(ef.getTitle());
         event.setDescription(ef.getDescription());
         event.setDate(ef.getDate());
         event.setLocation(ef.getLocation());
-        event.setAuthor(ef.getAuthor());
+        event.setAuthor(userService.findById((long)7));
+        event.setPublic(true);
         eventService.edit(event);
+        notServ.addInfoMessage("Event with id #" + id + " was successfully modified.");
         return "redirect:/events";
     }
 }

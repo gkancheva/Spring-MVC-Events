@@ -16,7 +16,7 @@
             </div>
 
             <label for="description">Description of the event:</label>
-            <div><input id="description" rows="15" type="text" name="description" th:value="*{description}" ></input>
+            <div><textarea id="description" rows="15" cols="60" type="text" name="description" th:field="*{description}" ></textarea>
                 <span class="formError" th:if="${#fields.hasErrors('description')}"
                       th:errors="*{description}">Invalid description</span>
             </div>

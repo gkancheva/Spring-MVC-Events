@@ -13,7 +13,7 @@ public class CreateNewEventForm {
     private String title;
 
     @NotNull
-    @Size(min = 2, message = "The event description should be at least 2 characters.")
+    @Size(min = 150, message = "The event description should be at least 150 characters.")
     private String description;
 
     @NotNull(message = "The date may not be null.")

@@ -20,10 +20,9 @@ public class EditEventForm {
     @DateTimeFormat(pattern = "dd-MMM-yyyy")
     private Date date;
 
-    @NotNull
+    @NotNull(message = "The location may not be null.")
     private String location;
 
-    @NotNull
     private User author;
 
     public User getAuthor() {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,19 +25,19 @@ public class EventServiceJPAImpl implements EventService{
 
     @Override
     public List<Event> findOrdered() {
-        return this.eventRepo.findOrdered(new PageRequest(0, 10));
+        return this.eventRepo.findOrdered();
     }
 
     @Override
     public List<Event> findUpcoming() {
-        return this.eventRepo.findOrdered(new PageRequest(0, 10))
+        return this.eventRepo.findOrdered()
                 .stream().filter(x -> x.getDate().after(new Date()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Event> findPast() {
-        return this.eventRepo.findOrdered(new PageRequest(0, 10))
+        return this.eventRepo.findOrdered()
                 .stream().filter(x -> x.getDate().before(new Date()))
                 .collect(Collectors.toList());
     }

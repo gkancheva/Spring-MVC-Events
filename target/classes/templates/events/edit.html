@@ -7,39 +7,39 @@
 <body>
 <header th:replace="layout :: site-header" />
 <main id="edit-event">
-    <form class="edit-event" method="post">
+    <form class="edit-event" method="post" th:object="${editEventForm}">
 
         <label for="title">Event title:</label>
-        <div><input id="title" type="text" name="title" th:value="*{event.title}"/>
-            <span class="formError" th:if="${#fields.hasErrors('event.title')}"
-                  th:errors="*{event.title}">Invalid title</span>
+        <div><input id="title" type="text" name="title" th:value="*{title}" />
+            <span class="formError" th:if="*{#fields.hasErrors('title')}"
+                  th:errors="*{title}">Invalid title</span>
         </div>
 
         <label for="description">Description of the event:</label>
-        <div><input id="description" rows="15" type="text" name="description" th:value="*{event.description}" ></input>
-            <span class="formError" th:if="${#fields.hasErrors('event.description')}"
-                  th:errors="*{event.description}">Invalid description</span>
+        <div><textarea id="description" rows="20" cols="60" name="description" th:field="*{description}" ></textarea>
+            <span class="formError" th:if="${#fields.hasErrors('description')}"
+                  th:errors="*{description}">Invalid description</span>
         </div>
 
         <label for="date">Date of the event:</label>
-        <div><input id="date" type="text" name="date" th:value="*{#dates.format(event.date, 'dd-MMM-yyyy')}" />
-            <span class="formError" th:if="${#fields.hasErrors('event.date')}"
-                  th:errors="*{#dates.format(event.date, 'dd-MMM-yyyy')}">Invalid date</span>
+        <div><input id="date" type="text" name="date" th:value="*{#dates.format(date, 'dd-MMM-yyyy')}" />
+            <span class="formError" th:if="${#fields.hasErrors('date')}"
+                  th:errors="*{#dates.format(date, 'dd-MMM-yyyy')}">Invalid date</span>
         </div>
 
         <label for="location">Location:</label>
-        <div><input id="location" type="text" name="location" th:value="*{event.location}" />
-            <span class="formError" th:if="${#fields.hasErrors('event.location')}"
-                  th:errors="*{event.location}">Invalid location</span>
+        <div><input id="location" type="text" name="location" th:value="*{location}" />
+            <span class="formError" th:if="${#fields.hasErrors('location')}"
+                  th:errors="*{location}">Invalid location</span>
         </div>
 
         <label for="location">Author:</label>
-        <div><input id="author" type="text" name="author" th:value="*{event.author.fullName}" />
-            <span class="formError" th:if="${#fields.hasErrors('event.author.fullName')}"
-                  th:errors="*{event.author.fullName}">Invalid author</span>
-        </div>
+        <div><input id="author" type="text" name="author" th:value="*{author.fullName}" disabled="disabled"/>
+            <span class="formError" th:if="${#fields.hasErrors('author.fullName')}"
+                  th:errors="*{author.fullName}">Invalid author</span>
+        </div><br/>
 
-        <div><input type="submit" id="edit" value="Edit"/>
+        <div><input type="submit" id="edit" value="Save"/>
             <a href="index.html" th:href="@{/events}">[Cancel]</a>
         </div>
 
