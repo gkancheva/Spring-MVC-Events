@@ -4,6 +4,7 @@ import eventSystem.models.User;
 import eventSystem.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +17,25 @@ public class UserServiceJPAImpl implements UserService{
 
     @Override
     public boolean authenticate(String username, String password) {
-        //TODO: authenticate
-        return true;
+        String pass_hash = BCrypt.hashpw(password, BCrypt.gensalt());
+        List<User> users = userRepo.findAll();
+        Long id = findExisitngUser(users, username);
+        if(id != -1) {
+            User user = userRepo.findOne(id);
+            if(BCrypt.checkpw(user.getPasswordHash(), pass_hash)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Long findExisitngUser(List<User> users, String username) {
+        for (int i = 0; i < users.size(); i++) {
+            if(users.get(i).getUsername().equals(username)) {
+                return users.get(i).getId();
+            }
+        }
+        return (long) -1;
     }
 
     @Override
@@ -32,6 +50,8 @@ public class UserServiceJPAImpl implements UserService{
 
     @Override
     public User create(User user) {
+        String pass_hash = BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt());
+        user.setPasswordHash(pass_hash);
         return this.userRepo.save(user);
     }
 

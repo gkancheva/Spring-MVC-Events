@@ -58,11 +58,8 @@ public class UserController {
             notServ.addErrorMessage("The password does not match. Please try again.");
             return "users/register";
         }
-        User user = new User();
-        user.setFullName(rf.getFullName());
-        user.setUsername(rf.getUsername());
-        user.setPasswordHash(rf.getPassword());
-        user.seteMail(rf.geteMail());
+        User user = new User(rf.getUsername(), rf.getPassword(), rf.geteMail(), rf.getFullName());
+        userServ.create(user);
         notServ.addInfoMessage("Register successful!");
         return "redirect:/";
     }
