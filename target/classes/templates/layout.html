@@ -25,7 +25,7 @@
         <a href="users/index.html" th:href="@{/users}">Users</a>
         <div id="logged-in-info">
             <span>Hello,
-                <b><span th:text="${#httpServletRequest.remoteUser != null} ? ${#httpServletRequest.remoteUser} : ${'guest'}"></span></b>
+                <b><span th:text="${#httpServletRequest.remoteUser != null} ? ${#httpServletRequest.remoteUser} : ${'gergana!'}">Description</span></b>
             </span>
             <form method="post" th:action="@{/users/logout}">
                 <input type="submit" value="Logout"/>
