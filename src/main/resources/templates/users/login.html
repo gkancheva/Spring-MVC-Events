@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="layout :: site-head">
+<head th:replace="layout :: site-head"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <title>Login</title>
 </head>
 
@@ -21,7 +22,7 @@
         <div><input id="password" type="password" name="password" th:value="*{password}" />
             <span class="formError" th:if="${#fields.hasErrors('password')}"
                   th:errors="*{password}">Invalid password</span>
-        </div>
+        </div><br/>
         <div><input type="submit" value="Login"/>
             <a href="register.html" th:href="@{/users/register}">[Go to Register]</a></div>
     </form>

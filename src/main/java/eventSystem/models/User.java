@@ -23,25 +23,30 @@ public class User {
     @Column(nullable = false, length = 100)
     private String fullName;
 
+    @Column(nullable = false)
+    private String role;
+
     @OneToMany(mappedBy = "author")
     private Set<Event> events = new HashSet<>();
 
     public User() {
     }
 
-    public User(String username, String passwordHash, String eMail, String fullName) {
+    public User(String username, String passwordHash, String eMail, String fullName, String role) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.eMail = eMail;
         this.fullName = fullName;
+        this.role = role;
     }
 
-    public User(Long id, String username, String passwordHash, String eMail, String fullName) {
+    public User(Long id, String username, String passwordHash, String eMail, String fullName, String role) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.eMail = eMail;
         this.fullName = fullName;
+        this.role = role;
     }
 
     public Long getId() {
@@ -90,6 +95,14 @@ public class User {
 
     public void seteMail(String eMail) {
         this.eMail = eMail;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

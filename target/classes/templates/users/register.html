@@ -40,7 +40,7 @@
     <div><input id="retypePassword" type="password" name="retypePassword" th:value="*{retypePassword}" />
         <span class="formError" th:if="${#fields.hasErrors('retypePassword')}"
               th:errors="*{retypePassword}">Invalid password</span>
-    </div>
+    </div><br/>
 
     <div><input type="submit" value="Register"/>
         <a href="login.html" th:href="@{/users/login}">[Go to Login]</a></div>

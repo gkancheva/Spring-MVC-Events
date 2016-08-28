@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
 import java.text.ParseException;
@@ -35,18 +36,22 @@ public class EventController {
     private NotificationService notServ;
 
     @RequestMapping("/events/view/{id}")
-    public String showSingleEvent(@PathVariable("id") Long id, Model m) {
+    public String showSingleEvent(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
         Event event = eventService.findById(id);
         if(event == null) {
             notServ.addErrorMessage("Cannot find event with id #" + id);
             return "redirect:/";
         }
         m.addAttribute("event", event);
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            m.addAttribute("loggedUser", user);
+        }
         return "events/view";
     }
 
     @RequestMapping("/events")
-    public String showAllEvents(Model m) {
+    public String showAllEvents(Model m ,HttpSession httpSession) {
         Date today = new Date();
         List<Event> allEvents = eventService.findOrdered();
         List<Event> allUpcomingEvents = allEvents
@@ -59,85 +64,136 @@ public class EventController {
                 .collect(Collectors.toList());
         m.addAttribute("allUpcomingEvents", allUpcomingEvents);
         m.addAttribute("allPastEvents", allPastEvents);
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            m.addAttribute("loggedUser", user);
+        }
         return "events/index";
     }
 
     @RequestMapping("/events/create")
-    public String showCreateEventPage(CreateNewEventForm createNewEventForm) {
-        //ToDo: Take the user from the session
-        return "events/create";
+    public String showCreateEventPage(CreateNewEventForm createNewEventForm, HttpSession httpSession, Model m) {
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            m.addAttribute("loggedUser", user);
+            return "events/create";
+        }
+        notServ.addErrorMessage("You should be logged in to create new event. Please login.");
+        return "/users/login";
     }
 
     @RequestMapping(value = "/events/create", method = RequestMethod.POST)
-    public String validateAndCreateEvent(@Valid CreateNewEventForm cf, BindingResult br) {
+    public String validateAndCreateEvent(@Valid CreateNewEventForm cf, BindingResult br, HttpSession httpSession, Model m) {
         //TODO: Change the type="text" with type="date" to show the calendar window
-        if(br.hasErrors()) {
-            notServ.addErrorMessage("Please fill the form correctly");
-            return "events/create";
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = new User();
+            user = (User) httpSession.getAttribute("loggedUser");
+            if(br.hasErrors()) {
+                notServ.addErrorMessage("Please fill the form correctly");
+                httpSession.setAttribute("loggedUser", user);
+                return "events/create";
+            }
+            Event event = new Event();
+            event.setTitle(cf.getTitle());
+            event.setDescription(cf.getDescription());
+            event.setDate(cf.getDate());
+            event.setLocation(cf.getLocation());
+            event.setAuthor(userService.findById(user.getId()));
+            event.setPublic(true);
+            eventService.create(event);
+            notServ.addInfoMessage("Event with id #" + event.getId() + " was successfully created.");
+            httpSession.setAttribute("loggedUser", user);
+            return "redirect:/events";
         }
-        Event event = new Event();
-        event.setTitle(cf.getTitle());
-        event.setDescription(cf.getDescription());
-        event.setDate(cf.getDate());
-        event.setLocation(cf.getLocation());
-        event.setAuthor(userService.findById((long)7));
-        event.setPublic(true);
-        eventService.create(event);
-        notServ.addInfoMessage("Event with id #" + event.getId() + " was successfully created.");
-        return "redirect:/events";
+        notServ.addErrorMessage("An error occurred, please try again.");
+        return "/events";
     }
 
     @RequestMapping(value = "/events/delete/{id}", method = RequestMethod.GET)
-    public String showDeleteEventPage(@PathVariable("id") Long id, Model m) {
-        Event event = eventService.findById(id);
-        if(event == null) {
-            notServ.addErrorMessage("Cannot find event with id #" + id);
-            return "redirect:/events";
+    public String showDeleteEventPage(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            m.addAttribute(user);
+            Event event = eventService.findById(id);
+            if(event == null) {
+                notServ.addErrorMessage("Cannot find event with id #" + id);
+                httpSession.setAttribute("loggedUser", user);
+                m.addAttribute("loggedUser", user);
+                return "redirect:/events";
+            }
+            m.addAttribute("event", event);
+            httpSession.setAttribute("loggedUser", user);
+            m.addAttribute("loggedUser", user);
+            return "events/delete";
         }
-        m.addAttribute("event", event);
-        return "events/delete";
+        notServ.addErrorMessage("You are not allowed to delete events. Please login.");
+        return "/users/login";
     }
 
     @RequestMapping(value = "events/delete/{id}", method = RequestMethod.POST)
-    public String deleteEvent(@PathVariable("id") Long id) {
-        eventService.deleteById(id);
-        notServ.addInfoMessage("Event with id #" + id + " was successfully deleted.");
-        return ("redirect:/events");
+    public String deleteEvent(@PathVariable("id") Long id, HttpSession httpSession, Model m) {
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            eventService.deleteById(id);
+            httpSession.setAttribute("loggedUser", user);
+            notServ.addInfoMessage("Event with id #" + id + " was successfully deleted.");
+            m.addAttribute("loggedUser", user);
+            return ("redirect:/events");
+        }
+        notServ.addErrorMessage("You are not allowed to delete this event.");
+        return "users/login";
     }
 
     @RequestMapping(value = "/events/edit/{id}", method = RequestMethod.GET)
-    public String showEditPage(@PathVariable ("id") Long id, Model m, EditEventForm editEventForm) {
-        Event event = eventService.findById(id);
-        if(event == null) {
-            notServ.addErrorMessage("Cannot find event with id #" + id);
-            return "redirect:/events";
+    public String showEditPage(@PathVariable ("id") Long id, Model m, EditEventForm editEventForm, HttpSession httpSession) {
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            Event event = eventService.findById(id);
+            if(event == null) {
+                notServ.addErrorMessage("Cannot find event with id #" + id);
+                httpSession.setAttribute("loggedUser", user);
+                m.addAttribute("loggedUser", user);
+                return "redirect:/events";
+            }
+            editEventForm.setAuthor(event.getAuthor());
+            editEventForm.setTitle(event.getTitle());
+            editEventForm.setDescription(event.getDescription());
+            editEventForm.setDate(event.getDate());
+            editEventForm.setLocation(event.getLocation());
+            m.addAttribute("event", event);
+            httpSession.setAttribute("loggedUser", user);
+            m.addAttribute("loggedUser", user);
+            return ("events/edit");
         }
-        m.addAttribute("event", event);
-        editEventForm.setAuthor(event.getAuthor());
-        editEventForm.setTitle(event.getTitle());
-        editEventForm.setDescription(event.getDescription());
-        editEventForm.setDate(event.getDate());
-        editEventForm.setLocation(event.getLocation());
-        return ("events/edit");
+        notServ.addErrorMessage("You are not allowed to edit the event. Please login");
+        return "users/login";
     }
 
     @RequestMapping(value = "events/edit/{id}", method = RequestMethod.POST)
-    public String editEvent(@PathVariable ("id") Long id, @Valid EditEventForm ef, BindingResult br) {
-        //TODO: 23.8.2016 г. : get author
-        if(br.hasErrors()) {
-            notServ.addErrorMessage("Please fill the form correctly");
-            return "events/edit";
+    public String editEvent(@PathVariable ("id") Long id, @Valid EditEventForm ef, BindingResult br, HttpSession httpSession, Model m) {
+        if(httpSession.getAttribute("loggedUser") != null) {
+            User user = (User)httpSession.getAttribute("loggedUser");
+            if(br.hasErrors()) {
+                notServ.addErrorMessage("Please fill the form correctly");
+                httpSession.setAttribute("loggedUser", user);
+                m.addAttribute("loggedUser", user);
+                return "events/edit";
+            }
+            Event event = new Event();
+            event.setId(id);
+            event.setTitle(ef.getTitle());
+            event.setDescription(ef.getDescription());
+            event.setDate(ef.getDate());
+            event.setLocation(ef.getLocation());
+            event.setAuthor(userService.findById(user.getId()));
+            event.setPublic(true);
+            eventService.edit(event);
+            notServ.addInfoMessage("Event with id #" + id + " was successfully modified.");
+            httpSession.setAttribute("loggedUser", user);
+            m.addAttribute("loggedUser", user);
+            return "redirect:/events";
         }
-        Event event = new Event();
-        event.setId(id);
-        event.setTitle(ef.getTitle());
-        event.setDescription(ef.getDescription());
-        event.setDate(ef.getDate());
-        event.setLocation(ef.getLocation());
-        event.setAuthor(userService.findById((long)7));
-        event.setPublic(true);
-        eventService.edit(event);
-        notServ.addInfoMessage("Event with id #" + id + " was successfully modified.");
-        return "redirect:/events";
+        notServ.addErrorMessage("You are not allowed to modify this event. Please login.");
+        return "users/login";
     }
 }

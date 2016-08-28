@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 
 <head th:fragment="site-head">
     <meta charset="UTF-8" />
@@ -18,16 +19,18 @@
         <a href="index.html" th:href="@{/}"><img
                 src="../public/img/site-logo-events.png" th:src="@{/img/site-logo-events.png}" /></a>
         <a href="index.html" th:href="@{/}">Home</a>
-        <a href="users/login.html" th:href="@{/users/login}">Login</a>
-        <a href="users/register.html" th:href="@{/users/register}">Register</a>
+        <a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/login.html" th:href="@{/users/login}">Login</a>
+        <a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/register.html" th:href="@{/users/register}">Register</a>
         <a href="events/index.html" th:href="@{/events}">Events</a>
-        <a href="events/create.html" th:href="@{/events/create}">Create Event</a>
-        <a href="users/index.html" th:href="@{/users}">Users</a>
+        <a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="events/create.html" th:href="@{/events/create}">Create Event</a>
+        <a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="users/index.html" th:href="@{/users}">Users</a>
         <div id="logged-in-info">
             <span>Hello,
-                <b><span th:text="${#httpServletRequest.remoteUser != null} ? ${#httpServletRequest.remoteUser} : ${'gergana!'}">Description</span></b>
+                <b><span th:text="${#httpSession.getAttribute('loggedUser') != null} ?
+                 ${#httpSession.getAttribute('loggedUser').username} :
+                 ${'guest!'}"></span></b>
             </span>
-            <form method="post" th:action="@{/users/logout}">
+            <form th:if="${#httpSession.getAttribute('loggedUser') != null}" th:action="@{/users/logout}" method="post">
                 <input type="submit" value="Logout"/>
             </form>
         </div>

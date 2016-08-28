@@ -15,7 +15,7 @@
                     <th>Description</th>
                     <th>Date</th>
                     <th>Location</th>
-                    <th>Action</th>
+                    <th th:if="${#httpServletRequest.remoteUser != null}">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -23,11 +23,13 @@
                     <td><span th:text="${e.title}">Title</span></td>
                     <td>
                         <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}"
-                           th:text="${#strings.length(e.description) > 150} ? ${#strings.substring(e.description, 0, 150) + '...'} : ${e.description}">Description</a>
+                           th:text="${#strings.length(e.description) > 150} ?
+                            ${#strings.substring(e.description, 0, 150) + '...'} :
+                            ${e.description}">Description</a>
                     </td>
                     <td><span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span></td>
                     <td><span th:text="${e.location}"></span></td>
-                    <td>
+                    <td th:if="${#httpServletRequest.remoteUser != null}">
                         <a href="#" th:href="@{/events/delete/{id}/(id=${e.id})}">[Delete]</a>
                         <a href="#" th:href="@{/events/edit/{id}/(id=${e.id})}">[Edit]</a>
                     </td>
@@ -42,7 +44,7 @@
                     <th>Description</th>
                     <th>Date</th>
                     <th>Location</th>
-                    <th>Action</th>
+                    <th th:if="${#httpServletRequest.remoteUser != null}">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -50,12 +52,13 @@
                     <td><span th:text="${e.title}">Title</span></td>
                     <td>
                         <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}"
-                           th:text="${#strings.length(e.description) > 150} ? ${#strings.substring(e.description, 0, 150) + '...'} : ${e.description}">Description</a>
+                           th:text="${#strings.length(e.description) > 150} ?
+                            ${#strings.substring(e.description, 0, 150) + '...'} :
+                            ${e.description}">Description</a>
                     </td>
                     <td><span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span></td>
                     <td><span th:text="${e.location}"></span></td>
-                    <td>
-                        <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">[View]</a>
+                    <td th:if="${#httpServletRequest.remoteUser != null}">
                         <a href="#" th:href="@{/events/delete/{id}/(id=${e.id})}">[Delete]</a>
                         <a href="#" th:href="@{/events/edit/{id}/(id=${e.id})}">[Edit]</a>
                     </td>

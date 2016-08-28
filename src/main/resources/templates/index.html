@@ -26,7 +26,9 @@
                 <span th:text="${e.location}">Event location</span>
             </div>
             <p class="content">
-                <span th:text="${#strings.length(e.description) > 400} ? ${#strings.substring(e.description, 0, 400) + '...'} : ${e.description}">Description</span>
+                <span th:text="${#strings.length(e.description) > 400} ?
+                 ${#strings.substring(e.description, 0, 400) + '...'} :
+                 ${e.description}">Description</span>
                 <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">Read more</a>
             </p>
         </article>
