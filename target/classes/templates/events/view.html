@@ -25,7 +25,7 @@
                 <span th:text="${event.author.fullName}">Organized by someone</span>
             </div>
             <p class="content" th:utext="${event.description}">Event description</p>
-            <div th:if="${#httpServletRequest.remoteUser != null}">
+            <div th:if="${#httpSession.getAttribute('loggedUser') != null}">
                 <a href="#" th:href="@{/events/delete/{id}/(id=${event.id})}">[Delete event]</a>
                 <a href="#" th:href="@{/events/edit/{id}/(id=${event.id})}">[Edit event]</a>
             </div>

@@ -70,12 +70,8 @@ public class UserController {
 
     @RequestMapping(value = "/users/logout", method = RequestMethod.POST)
     public String logoutPage(HttpSession httpSession) {
-//        org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        if(auth != null) {
-//            new SecurityContextLogoutHandler().logout(request, response, auth);
-//        }
-//        notServ.addInfoMessage("You have been successfully logged out!");
+        notServ.addInfoMessage("You have been successfully logged out!");
         httpSession.invalidate();
-       return "redirect:/";
+        return "redirect:/";
     }
 }
