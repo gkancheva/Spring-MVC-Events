@@ -1,4 +1,4 @@
-package eventSystem.forms.Events;
+package eventSystem.forms.event;
 
 import eventSystem.models.User;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,31 +7,23 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-public class EditEventForm {
+public class CreateNewEventForm {
     @NotNull
     @Size(min = 2, max = 300, message = "Title of the event should be between 2 and 300 characters.")
     private String title;
 
     @NotNull
-    @Size(min = 2, message = "The event description should be at least 2 characters.")
+    @Size(min = 150, message = "The event description should be at least 150 characters.")
     private String description;
 
     @NotNull(message = "The date may not be null.")
     @DateTimeFormat(pattern = "dd-MMM-yyyy")
     private Date date;
 
-    @NotNull(message = "The location may not be null.")
+    @NotNull
     private String location;
 
     private User author;
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
 
     public String getTitle() {
         return title;
@@ -63,5 +55,13 @@ public class EditEventForm {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }

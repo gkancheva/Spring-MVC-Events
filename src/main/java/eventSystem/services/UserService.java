@@ -11,5 +11,6 @@ public interface UserService {
     User findByUsername(String username);
     User create (User user);
     User edit (User user);
+    Long checkIfUserExists(List<User> users, String username);
     void deleteById(Long id);
 }

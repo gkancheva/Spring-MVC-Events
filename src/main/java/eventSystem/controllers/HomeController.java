@@ -23,9 +23,9 @@ public class HomeController {
     public String index(Model m, HttpSession httpSession) {
         List<Event> upcomingEvents = eventService.findUpcoming();
         m.addAttribute("allUpcomingEvents", upcomingEvents);
-        List<Event> upcoming3events = upcomingEvents.stream()
+        List<Event> upcoming5events = upcomingEvents.stream()
                 .limit(5).collect(Collectors.toList());
-        m.addAttribute("upcoming5events", upcoming3events);
+        m.addAttribute("upcoming5events", upcoming5events);
         List<Event> past3Events = eventService.findPast().stream()
                 .limit(3).collect(Collectors.toList());
         m.addAttribute("past3events", past3Events);

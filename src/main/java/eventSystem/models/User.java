@@ -1,6 +1,12 @@
 package eventSystem.models;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,12 +47,8 @@ public class User {
     }
 
     public User(Long id, String username, String passwordHash, String eMail, String fullName, String role) {
+        this(username, passwordHash, eMail, fullName, role);
         this.id = id;
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.eMail = eMail;
-        this.fullName = fullName;
-        this.role = role;
     }
 
     public Long getId() {
@@ -107,7 +109,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "user{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", eMail='" + eMail + '\'' +

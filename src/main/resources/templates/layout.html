@@ -23,7 +23,7 @@
         <a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/register.html" th:href="@{/users/register}">Register</a>
         <a href="events/index.html" th:href="@{/events}">Events</a>
         <a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="events/create.html" th:href="@{/events/create}">Create Event</a>
-        <a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="users/index.html" th:href="@{/users}">Users</a>
+        <a th:if="${#httpSession.getAttribute('loggedUser') != null} and ${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}" href="users/admin/index.html" th:href="@{/users}">Users</a>
         <div id="logged-in-info">
             <span>Hello,
                 <b><span th:text="${#httpSession.getAttribute('loggedUser') != null} ?

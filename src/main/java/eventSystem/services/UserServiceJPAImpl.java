@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -17,9 +18,8 @@ public class UserServiceJPAImpl implements UserService{
 
     @Override
     public boolean authenticate(String username, String password) {
-        String pass_hash = BCrypt.hashpw(password, BCrypt.gensalt());
         List<User> users = userRepo.findAll();
-        Long id = checkIfExists(users, username);
+        Long id = checkIfUserExists(users, username);
         if(id != -1) {
             User user = userRepo.findOne(id);
             if(BCrypt.checkpw(password, user.getPasswordHash())) {
@@ -27,15 +27,6 @@ public class UserServiceJPAImpl implements UserService{
             }
         }
         return false;
-    }
-
-    private Long checkIfExists(List<User> users, String username) {
-        for (int i = 0; i < users.size(); i++) {
-            if(users.get(i).getUsername().equals(username)) {
-                return users.get(i).getId();
-            }
-        }
-        return (long) -1;
     }
 
     @Override
@@ -68,5 +59,15 @@ public class UserServiceJPAImpl implements UserService{
     @Override
     public void deleteById(Long id) {
         this.userRepo.delete(id);
+    }
+
+    @Override
+    public Long checkIfUserExists(List<User> users, String username) {
+        for (int i = 0; i < users.size(); i++) {
+            if(users.get(i).getUsername().equals(username)) {
+                return users.get(i).getId();
+            }
+        }
+        return (long) -1;
     }
 }

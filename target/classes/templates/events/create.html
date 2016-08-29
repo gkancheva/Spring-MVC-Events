@@ -31,7 +31,7 @@
             <div><input id="location" type="text" name="location" th:value="*{location}" />
                 <span class="formError" th:if="${#fields.hasErrors('location')}"
                       th:errors="*{location}">Invalid location</span>
-            </div>
+            </div><br/>
 
             <div><input type="submit" value="Create"/>
                 <a href="index.html" th:href="@{/events}">[Cancel]</a>
