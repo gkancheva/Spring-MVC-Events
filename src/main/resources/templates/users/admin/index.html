@@ -17,6 +17,7 @@
             <th>E-mail</th>
             <th>Role</th>
             <th>Edit</th>
+            <th>Events</th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +29,11 @@
             <td th:text="${user.role}">Role</td>
             <td>
                 <a href="#" th:href="@{/users/{id}/(id=${user.id})}">[Edit]</a>
+                <a href="#" th:href="@{/users/delete/{id}/(id=${user.id})}">[Delete]</a>
+            </td>
+            <td>
+                <a href="#" th:if="${#lists.size(user.events) > 0}" th:href="@{/events/{id}/(id=${user.id})}">View events</a>
+                <span th:if="${#lists.isEmpty(user.events)}">No created events</span>
             </td>
         </tr>
         </tbody>

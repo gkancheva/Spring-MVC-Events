@@ -1,7 +1,9 @@
 package eventSystem.controllers;
 
 import eventSystem.forms.user.EditUserForm;
+import eventSystem.models.Event;
 import eventSystem.models.User;
+import eventSystem.services.EventService;
 import eventSystem.services.NotificationService;
 import eventSystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EventService eventService;
 
     @Autowired
     private NotificationService notificationService;
@@ -87,4 +92,45 @@ public class AdminController {
         return "redirect:/users/login";
     }
 
+    @RequestMapping(value = "/users/delete/{id}", method = RequestMethod.GET)
+    public String showDeleteUserPage(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
+        if(httpSession.getAttribute(LOGGED_USER) != null) {
+            User admin = (User)httpSession.getAttribute(LOGGED_USER);
+            if(admin.getRole().equals(ROLE_ADMIN)){
+                User userToDelete = userService.findById(id);
+                if(userToDelete == null) {
+                    notificationService.addErrorMessage(ERROR_NO_SUCH_USER);
+                    return "redirect:/users";
+                }
+                m.addAttribute("user", userToDelete);
+                return "users/admin/delete";
+            }
+            notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+            return "redirect:/";
+        }
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
+        return "redirect:/users/login";
+    }
+
+    @RequestMapping(value = "users/delete/{id}", method = RequestMethod.POST)
+    public String deleteUser(@PathVariable("id") Long id, HttpSession httpSession) {
+        if(httpSession.getAttribute(LOGGED_USER) != null) {
+            User admin = (User)httpSession.getAttribute(LOGGED_USER);
+            if(admin.getRole().equals(ROLE_ADMIN)) {
+                if(userService.findById(id).getEvents().size() > 0) {
+                    List<Event> events = eventService.findEventsOfSpecUser(id);
+                    for (int i = 0; i < events.size(); i++) {
+                        eventService.deleteById(events.get(i).getId());
+                    }
+                }
+                userService.deleteById(id);
+                notificationService.addInfoMessage("User #" + id + " has been successfully deleted!");
+                return "redirect:/users";
+            }
+            notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+            return "redirect:/";
+        }
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
+        return "redirect:/users/login";
+    }
 }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout :: site-head">
+    <title>Delete User</title>
+</head>
+
+<body>
+<header th:replace="layout :: site-header" />
+<h2>User details for user #<span th:text="${user.id}"></span></h2>
+    <form class="edit-user" method="post">
+
+        <label for="username">Username:</label>
+        <div><input id="username" type="text" name="username" th:value="${user.username}" disabled="disabled"/>
+        </div>
+
+        <label for="fullName">Full name:</label>
+        <div><input id="fullName" type="text" name="fullName" th:value="${user.fullName}" disabled="disabled"/>
+        </div>
+
+        <label for="eMail">E-mail:</label>
+        <div><input id="eMail" type="text" name="eMail" th:value="${user.eMail}" disabled="disabled"/>
+        </div>
+
+        <label for="role">E-mail:</label>
+        <div><input id="role" type="text" name="role" th:value="${user.role}" disabled="disabled"/>
+        </div><br/>
+
+        <div th:if="${not #lists.isEmpty(user.events)}">
+            <div><label for="events">Number of owned events:</label></div>
+            <input id="events" type="text" name="events" th:value="${#lists.size(user.events)}" disabled="disabled"/>
+            <div><span disabled="disabled"><i>Please note, that all existing events will be deleted!</i></span></div>
+        </div><br/>
+
+        <div><input type="submit" id="delete" value="Delete"/>
+            <a href="#" th:href="@{/users}">[Cancel]</a>
+        </div>
+
+    </form>
+<footer th:replace="layout :: site-footer" />
+</body>
+
+</html>

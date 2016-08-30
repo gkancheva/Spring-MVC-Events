@@ -25,9 +25,12 @@ import java.util.stream.Collectors;
 public class EventController {
     private static String LOGGED_USER = "loggedUser";
     private static String ERROR_NO_SUCH_EVENT_ID = "Cannot find event with id #";
-    private static String ERROR_UNAUTHORIZED_ACCESS = "You should be logged in to create, modify or delete event. Please login.";
+    private static String ERROR_USER_NOT_LOGGED_IN = "You should be logged in to create, modify or delete event. Please login.";
+    private static String ERROR_UNAUTHORIZED_ACCESS = "You are not allowed to access this data.";
     private static String ERROR_FORM = "Please fill the form correctly.";
     private static String ROLE_ADMIN = "ROLE_ADMIN";
+    private static String UPCOMING_EVENTS = "allUpcomingEvents";
+    private static String PAST_EVENTS = "allPastEvents";
 
     @Autowired
     private UserService userService;
@@ -40,23 +43,39 @@ public class EventController {
 
     @RequestMapping("/events")
     public String showAllEvents(Model m, HttpSession httpSession) {
-        Date today = new Date();
-        List<Event> allEvents = eventService.findOrdered();
-        List<Event> allUpcomingEvents = allEvents
-                .stream()
-                .filter(e -> e.getDate().after(today))
-                .collect(Collectors.toList());
-        List<Event> allPastEvents = allEvents
-                .stream()
-                .filter(e -> e.getDate().before(today))
-                .collect(Collectors.toList());
-        m.addAttribute("allUpcomingEvents", allUpcomingEvents);
-        m.addAttribute("allPastEvents", allPastEvents);
+        List<Event> upcomingEvents = eventService.findUpcoming();
+        List<Event> pastEvents = eventService.findPast();
+        m.addAttribute(UPCOMING_EVENTS, upcomingEvents);
+        m.addAttribute(PAST_EVENTS, pastEvents);
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User)httpSession.getAttribute(LOGGED_USER);
             m.addAttribute(LOGGED_USER, user);
         }
         return "events/index";
+    }
+
+    @RequestMapping("/events/{userId}")
+    public String showEventsFromSpecificUser(@PathVariable("userId") Long userId, Model m, HttpSession httpSession) {
+        if(httpSession.getAttribute(LOGGED_USER) != null) {
+            User admin = (User)httpSession.getAttribute(LOGGED_USER);
+            if(admin.getRole().equals(ROLE_ADMIN)) {
+                List<Event> upcomingEvents = eventService
+                        .findEventsOfSpecUser(userId).stream()
+                        .filter(e -> e.getDate().after(new Date()))
+                        .collect(Collectors.toList());
+                List<Event> pastEvents = eventService
+                        .findEventsOfSpecUser(userId).stream()
+                        .filter(e -> e.getDate().before(new Date()))
+                        .collect(Collectors.toList());
+                m.addAttribute(UPCOMING_EVENTS, upcomingEvents);
+                m.addAttribute(PAST_EVENTS, pastEvents);
+                return "/events/index";
+            }
+            notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+            return "redirect:/";
+        }
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
+        return "redirect:/users/login";
     }
 
     @RequestMapping("/events/view/{id}")
@@ -81,7 +100,7 @@ public class EventController {
             m.addAttribute(LOGGED_USER, user);
             return "events/create";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
         return "redirect:/users/login";
     }
 
@@ -105,7 +124,7 @@ public class EventController {
             notificationService.addInfoMessage("Event with id #" + event.getId() + " has been successfully created.");
             return "redirect:/events";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
         return "redirect:/events";
     }
 
@@ -122,7 +141,7 @@ public class EventController {
             m.addAttribute(LOGGED_USER, user);
             return "events/delete";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
         return "redirect:/users/login";
     }
 
@@ -133,7 +152,7 @@ public class EventController {
             notificationService.addInfoMessage("Event with id #" + id + " has been successfully deleted.");
             return ("redirect:/events");
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
         return "redirect:/users/login";
     }
 
@@ -157,7 +176,7 @@ public class EventController {
             m.addAttribute("event", event);
             return ("events/edit");
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
         return "redirect:/users/login";
     }
 
@@ -187,7 +206,7 @@ public class EventController {
             m.addAttribute(LOGGED_USER, user);
             return "redirect:/events";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
+        notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
         return "redirect:/users/login";
     }
 }

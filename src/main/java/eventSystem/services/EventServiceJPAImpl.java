@@ -41,6 +41,11 @@ public class EventServiceJPAImpl implements EventService{
     }
 
     @Override
+    public List<Event> findEventsOfSpecUser(Long userId) {
+        return this.eventRepo.findEventsOfSpecUser(userId);
+    }
+
+    @Override
     public Event findById(Long id) {
         return this.eventRepo.findOne(id);
     }
