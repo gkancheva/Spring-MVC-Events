@@ -26,10 +26,11 @@
             </div>
             <p class="content" th:utext="${event.description}">Event description</p>
             <div th:if="${#httpSession.getAttribute('loggedUser') != null}">
-                <a href="#" th:href="@{/events/delete/{id}/(id=${event.id})}">[Delete event]</a>
-                <a href="#" th:href="@{/events/edit/{id}/(id=${event.id})}">[Edit event]</a>
+                <div th:if="${#httpSession.getAttribute('loggedUser').id == event.author.id} or ${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}">
+                    <a href="#" th:href="@{/events/delete/{id}/(id=${event.id})}">[Delete event]</a>
+                    <a href="#" th:href="@{/events/edit/{id}/(id=${event.id})}">[Edit event]</a>
+                </div>
             </div>
-
         </article>
     </div>
 </main>

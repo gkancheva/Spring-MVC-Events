@@ -11,7 +11,7 @@
 
         <label for="title">Event title:</label>
         <div><input id="title" type="text" name="title" th:value="*{title}" />
-            <span class="formError" th:if="*{#fields.hasErrors('title')}"
+            <span class="formError" th:if="${#fields.hasErrors('title')}"
                   th:errors="*{title}">Invalid title</span>
         </div>
 
@@ -31,12 +31,14 @@
         <div><input id="location" type="text" name="location" th:value="*{location}" />
             <span class="formError" th:if="${#fields.hasErrors('location')}"
                   th:errors="*{location}">Invalid location</span>
-        </div>
+        </div><br/>
 
-        <label for="location">Author:</label>
-        <div><input id="author" type="text" name="author" th:value="*{author.fullName}" disabled="disabled"/>
-            <span class="formError" th:if="${#fields.hasErrors('author.fullName')}"
-                  th:errors="*{author.fullName}">Invalid author</span>
+        <div th:if="${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}">
+            <label for="location">Author:</label>
+            <select id="username" th:field="*{username}">
+                <option th:each="u : ${usernames}" th:value="${u}"
+                        th:text="${u}">Authors</option>
+            </select>
         </div><br/>
 
         <div><input type="submit" id="edit" value="Save"/>

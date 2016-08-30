@@ -9,11 +9,11 @@ import java.util.Date;
 
 public class CreateNewEventForm {
     @NotNull
-    @Size(min = 2, max = 300, message = "Title of the event should be between 2 and 300 characters.")
+    @Size(min = 10, max = 300, message = "Title of the event should be between 10 and 300 characters.")
     private String title;
 
     @NotNull
-    @Size(min = 150, message = "The event description should be at least 150 characters.")
+    @Size(min = 50, message = "The event description should be at least 50 characters.")
     private String description;
 
     @NotNull(message = "The date may not be null.")

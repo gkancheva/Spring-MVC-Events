@@ -9,11 +9,11 @@ import java.util.Date;
 
 public class EditEventForm {
     @NotNull
-    @Size(min = 2, max = 300, message = "Title of the event should be between 2 and 300 characters.")
+    @Size(min = 10, max = 300, message = "Title of the event should be between 10 and 300 characters.")
     private String title;
 
     @NotNull
-    @Size(min = 2, message = "The event description should be at least 2 characters.")
+    @Size(min = 50, message = "The event description should be at least 50 characters.")
     private String description;
 
     @NotNull(message = "The date may not be null.")
@@ -24,6 +24,16 @@ public class EditEventForm {
     private String location;
 
     private User author;
+
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public User getAuthor() {
         return author;

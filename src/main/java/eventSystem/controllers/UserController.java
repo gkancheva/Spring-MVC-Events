@@ -1,14 +1,12 @@
 package eventSystem.controllers;
 
-import eventSystem.models.User;
 import eventSystem.forms.user.LoginForm;
 import eventSystem.forms.user.RegisterForm;
-import eventSystem.repositories.UserRepository;
+import eventSystem.models.User;
 import eventSystem.services.NotificationService;
 import eventSystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,11 +18,17 @@ import java.util.Objects;
 @Controller
 public class UserController {
     private static String LOGGED_USER = "loggedUser";
-    @Autowired
-    private UserService userService;
+    private static String ROLE_USER = "ROLE_USER";
+    private static String ERROR_FORM = "Please fill the form correctly";
+    private static String ERROR_INVALID_LOGIN = "Invalid login!";
+    private static String ERROR_PASSWORD_MATCH = "The password does not match. Please try again.";
+    private static String ERROR_USERNAME_UNAVAILABLE = "User with the same username already exists, please try with another username.";
+    private static String SUCCESS_LOGIN = "Login successful!";
+    private static String SUCCESS_REGISTER = "Register successful!";
+    private static String SUCCESS_LOGOUT = "You have been successfully logged out!";
 
     @Autowired
-    private UserRepository userRepo;
+    private UserService userService;
 
     @Autowired
     private NotificationService notificationService;
@@ -37,14 +41,14 @@ public class UserController {
     @RequestMapping(value = "/users/login", method = RequestMethod.POST)
     public String loginPage(@Valid LoginForm lf, BindingResult br, HttpSession httpSession) {
         if(br.hasErrors()) {
-            notificationService.addErrorMessage("Please fill the form correctly");
+            notificationService.addErrorMessage(ERROR_FORM);
             return "users/login";
         }
         if(!userService.authenticate(lf.getUsername(), lf.getPassword())) {
-            notificationService.addErrorMessage("Invalid login!");
+            notificationService.addErrorMessage(ERROR_INVALID_LOGIN);
             return "users/login";
         }
-        notificationService.addInfoMessage("Login successful!");
+        notificationService.addInfoMessage(SUCCESS_LOGIN);
         httpSession.setAttribute(LOGGED_USER, userService.findByUsername(lf.getUsername()));
         return "redirect:/";
     }
@@ -57,20 +61,20 @@ public class UserController {
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     public String registerPage(@Valid RegisterForm rf, BindingResult br, HttpSession httpSession) {
         if(br.hasErrors()) {
-            notificationService.addErrorMessage("Please fill the form correctly");
+            notificationService.addErrorMessage(ERROR_FORM);
             return "users/register";
         }
         if(!Objects.equals(rf.getPassword(), rf.getRetypePassword())) {
-            notificationService.addErrorMessage("The password does not match. Please try again.");
+            notificationService.addErrorMessage(ERROR_PASSWORD_MATCH);
             return "users/register";
         }
-        if(userService.checkIfUserExists(userRepo.findAll(), rf.getUsername()) != -1) {
-            notificationService.addErrorMessage("User with the same username already exists, please try with another username.");
+        if((userService.findByUsername(rf.getUsername())) != null) {
+            notificationService.addErrorMessage(ERROR_USERNAME_UNAVAILABLE);
             return "users/register";
         }
-        User user = new User(rf.getUsername(), rf.getPassword(), rf.geteMail(), rf.getFullName(), "ROLE_USER");
+        User user = new User(rf.getUsername(), rf.getPassword(), rf.geteMail(), rf.getFullName(), ROLE_USER);
         userService.create(user);
-        notificationService.addInfoMessage("Register successful!");
+        notificationService.addInfoMessage(SUCCESS_REGISTER);
         httpSession.setAttribute(LOGGED_USER, user);
         return "redirect:/";
     }
@@ -78,7 +82,7 @@ public class UserController {
     @RequestMapping(value = "/users/logout", method = RequestMethod.POST)
     public String logoutPage(HttpSession httpSession) {
         httpSession.invalidate();
-        notificationService.addInfoMessage("You have been successfully logged out!");
+        notificationService.addInfoMessage(SUCCESS_LOGOUT);
         return "redirect:/";
     }
 }

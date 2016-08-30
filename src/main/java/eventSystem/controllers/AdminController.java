@@ -2,7 +2,6 @@ package eventSystem.controllers;
 
 import eventSystem.forms.user.EditUserForm;
 import eventSystem.models.User;
-import eventSystem.repositories.UserRepository;
 import eventSystem.services.NotificationService;
 import eventSystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,14 @@ import java.util.List;
 @Controller
 public class AdminController {
     private static String LOGGED_USER = "loggedUser";
-    private static String ERROR_UNAUTHORIZED_USER = "You are not authorized to edit users. Please login.";
+    private static String ERROR_UNAUTHORIZED_USER = "You are not allowed to access this data.";
     private static String ERROR_NO_SUCH_USER = "Cannot find user with id #";
+    private static String ERROR_USER_NOT_LOGGED_IN = "You are not logged in. Please login.";
+    private static String ROLE_ADMIN = "ROLE_ADMIN";
+    private static String ROLE_USER = "ROLE_USER";
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private NotificationService notificationService;
@@ -35,24 +34,24 @@ public class AdminController {
     public String showUsers(Model m, HttpSession httpSession) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User)httpSession.getAttribute(LOGGED_USER);
-            if(user.getRole().equals("ROLE_ADMIN")) {
+            if(user.getRole().equals(ROLE_ADMIN)) {
                 m.addAttribute("users", userService.findAll());
                 return "/users/admin/index";
             }
-            notificationService.addErrorMessage("Unauthorized action.");
+            notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
             return "redirect:/";
         } else {
-            notificationService.addErrorMessage("You are not logged in. Please login.");
+            notificationService.addErrorMessage(ERROR_USER_NOT_LOGGED_IN);
             return "redirect:/users/login";
         }
     }
 
-    @RequestMapping(value = "/users/{id}")
-    public String showEditUserPage(@PathVariable("id") Long id, Model m, EditUserForm euf, HttpSession httpSession) {
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+    public String showEditUserPage(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User admin = (User)httpSession.getAttribute(LOGGED_USER);
-            if(admin.getRole().equals("ROLE_ADMIN")) {
-                User user = userRepository.findOne(id);
+            if(admin.getRole().equals(ROLE_ADMIN)) {
+                User user = userService.findById(id);
                 if(user == null) {
                     notificationService.addErrorMessage(ERROR_NO_SUCH_USER + id);
                     return "/users/index";
@@ -60,8 +59,8 @@ public class AdminController {
                 m.addAttribute("user", user);
                 m.addAttribute(LOGGED_USER, admin);
                 List<String> roles = new ArrayList<>();
-                roles.add("ROLE_ADMIN");
-                roles.add("ROLE_USER");
+                roles.add(ROLE_ADMIN);
+                roles.add(ROLE_USER);
                 m.addAttribute("roles", roles);
                 return "/users/admin/edit";
             }
@@ -74,13 +73,13 @@ public class AdminController {
     public String editUser(@PathVariable("id") Long id, Model m, EditUserForm euf, HttpSession httpSession) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User admin = (User)httpSession.getAttribute(LOGGED_USER);
-            if(admin.getRole().equals("ROLE_ADMIN")) {
-                User user = userRepository.findOne(id);
+            if(admin.getRole().equals(ROLE_ADMIN)) {
+                User user = userService.findById(id);
                 user.setRole(euf.getRole());
                 userService.edit(user);
                 notificationService.addInfoMessage("User with id #" + id + " has been successfully modified.");
                 m.addAttribute(LOGGED_USER, admin);
-                m.addAttribute("users", userRepository.findAll());
+                m.addAttribute("users", userService.findAll());
                 return "/users/admin/index";
             }
         }

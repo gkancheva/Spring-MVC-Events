@@ -1,17 +1,19 @@
 package eventSystem.controllers;
 
+import eventSystem.forms.event.CreateNewEventForm;
 import eventSystem.forms.event.EditEventForm;
 import eventSystem.models.Event;
 import eventSystem.models.User;
 import eventSystem.services.EventService;
-import eventSystem.services.UserService;
-import eventSystem.forms.event.CreateNewEventForm;
 import eventSystem.services.NotificationService;
+import eventSystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -23,7 +25,9 @@ import java.util.stream.Collectors;
 public class EventController {
     private static String LOGGED_USER = "loggedUser";
     private static String ERROR_NO_SUCH_EVENT_ID = "Cannot find event with id #";
-    private static String ERROR_UNAUTHORIZED_USER = "You should be logged in to create, modify or delete event. Please login.";
+    private static String ERROR_UNAUTHORIZED_ACCESS = "You should be logged in to create, modify or delete event. Please login.";
+    private static String ERROR_FORM = "Please fill the form correctly.";
+    private static String ROLE_ADMIN = "ROLE_ADMIN";
 
     @Autowired
     private UserService userService;
@@ -77,7 +81,7 @@ public class EventController {
             m.addAttribute(LOGGED_USER, user);
             return "events/create";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
         return "redirect:/users/login";
     }
 
@@ -87,7 +91,7 @@ public class EventController {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User) httpSession.getAttribute(LOGGED_USER);
             if(br.hasErrors()) {
-                notificationService.addErrorMessage("Please fill the form correctly.");
+                notificationService.addErrorMessage(ERROR_FORM);
                 return "events/create";
             }
             Event event = new Event();
@@ -98,10 +102,10 @@ public class EventController {
             event.setAuthor(userService.findById(user.getId()));
             event.setPublic(true);
             eventService.create(event);
-            notificationService.addInfoMessage("Event with id #" + event.getId() + " was successfully created.");
+            notificationService.addInfoMessage("Event with id #" + event.getId() + " has been successfully created.");
             return "redirect:/events";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
         return "redirect:/events";
     }
 
@@ -109,7 +113,6 @@ public class EventController {
     public String showDeleteEventPage(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User)httpSession.getAttribute(LOGGED_USER);
-            m.addAttribute(user);
             Event event = eventService.findById(id);
             if(event == null) {
                 notificationService.addErrorMessage(ERROR_NO_SUCH_EVENT_ID + id);
@@ -119,69 +122,72 @@ public class EventController {
             m.addAttribute(LOGGED_USER, user);
             return "events/delete";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
         return "redirect:/users/login";
     }
 
     @RequestMapping(value = "events/delete/{id}", method = RequestMethod.POST)
-    public String deleteEvent(@PathVariable("id") Long id, HttpSession httpSession, Model m) {
+    public String deleteEvent(@PathVariable("id") Long id, HttpSession httpSession) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
-            User user = (User)httpSession.getAttribute(LOGGED_USER);
             eventService.deleteById(id);
-            notificationService.addInfoMessage("Event with id #" + id + " was successfully deleted.");
-            m.addAttribute(LOGGED_USER, user);
+            notificationService.addInfoMessage("Event with id #" + id + " has been successfully deleted.");
             return ("redirect:/events");
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
         return "redirect:/users/login";
     }
 
     @RequestMapping(value = "/events/edit/{id}", method = RequestMethod.GET)
-    public String showEditPage(@PathVariable ("id") Long id, Model m, EditEventForm editEventForm, HttpSession httpSession) {
+    public String showEditPage(@PathVariable ("id") Long id, Model m, EditEventForm ef, HttpSession httpSession) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User)httpSession.getAttribute(LOGGED_USER);
             Event event = eventService.findById(id);
             if(event == null) {
                 notificationService.addErrorMessage(ERROR_NO_SUCH_EVENT_ID + id);
-                m.addAttribute(LOGGED_USER, user);
                 return "redirect:/events";
             }
+            ef.setTitle(event.getTitle());
+            ef.setDescription(event.getDescription());
+            ef.setLocation(event.getLocation());
+            ef.setDate(event.getDate());
+            ef.setUsername(event.getAuthor().getUsername());
+            if(user.getRole().equals(ROLE_ADMIN)) {
+                m.addAttribute("usernames", userService.findAllUsernames());
+            }
             m.addAttribute("event", event);
-            editEventForm.setTitle(event.getTitle());
-            editEventForm.setDescription(event.getDescription());
-            editEventForm.setLocation(event.getLocation());
-            editEventForm.setDate(event.getDate());
-            editEventForm.setAuthor(user);
-            m.addAttribute(LOGGED_USER, user);
             return ("events/edit");
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
         return "redirect:/users/login";
     }
 
     @RequestMapping(value = "events/edit/{id}", method = RequestMethod.POST)
-    public String editEvent(@PathVariable ("id") Long id, @Valid EditEventForm ef, BindingResult br, HttpSession httpSession, Model m) {
+    public String editEvent(@PathVariable ("id") Long eventId, @Valid EditEventForm ef, BindingResult br, HttpSession httpSession, Model m) {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User)httpSession.getAttribute(LOGGED_USER);
             if(br.hasErrors()) {
-                notificationService.addErrorMessage("Please fill the form correctly");
-                m.addAttribute(LOGGED_USER, user);
+                notificationService.addErrorMessage(ERROR_FORM);
                 return "events/edit";
             }
             Event event = new Event();
-            event.setId(id);
+            event.setId(eventId);
             event.setTitle(ef.getTitle());
             event.setDescription(ef.getDescription());
             event.setDate(ef.getDate());
             event.setLocation(ef.getLocation());
-            event.setAuthor(userService.findById(user.getId()));
+            if(user.getRole().equals(ROLE_ADMIN)) {
+                User currentAuthor = userService.findByUsername(ef.getUsername());
+                event.setAuthor(currentAuthor);
+            } else {
+                event.setAuthor(user);
+            }
             event.setPublic(true);
             eventService.edit(event);
-            notificationService.addInfoMessage("Event with id #" + id + " has been successfully modified.");
+            notificationService.addInfoMessage("Event with id #" + eventId + " has been successfully modified.");
             m.addAttribute(LOGGED_USER, user);
             return "redirect:/events";
         }
-        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
+        notificationService.addErrorMessage(ERROR_UNAUTHORIZED_ACCESS);
         return "redirect:/users/login";
     }
 }

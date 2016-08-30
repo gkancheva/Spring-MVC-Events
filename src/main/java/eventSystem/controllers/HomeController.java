@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
+    private static String LOGGED_USER = "loggedUser";
 
     @Autowired
     private EventService eventService;
@@ -29,8 +30,8 @@ public class HomeController {
         List<Event> past3Events = eventService.findPast().stream()
                 .limit(3).collect(Collectors.toList());
         m.addAttribute("past3events", past3Events);
-        User user = (User)httpSession.getAttribute("loggedUser");
-        m.addAttribute("loggedUser", user);
+        User user = (User)httpSession.getAttribute(LOGGED_USER);
+        m.addAttribute(LOGGED_USER, user);
         return "index";
     }
 }
