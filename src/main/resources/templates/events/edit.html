@@ -10,7 +10,7 @@
     <form class="edit-event" method="post" th:object="${editEventForm}">
 
         <label for="title">Event title:</label>
-        <div><input id="title" type="text" name="title" th:value="*{title}" />
+        <div><textarea id="title" rows="2" cols="60" name="title" th:field="*{title}" ></textarea>
             <span class="formError" th:if="${#fields.hasErrors('title')}"
                   th:errors="*{title}">Invalid title</span>
         </div>
@@ -22,9 +22,9 @@
         </div>
 
         <label for="date">Date of the event:</label>
-        <div><input id="date" type="text" name="date" th:value="*{#dates.format(date, 'dd-MMM-yyyy')}" />
+        <div><input id="date" type="date" name="date" th:value="${#dates.format(editEventForm.date, 'yyyy-MM-dd')}" />
             <span class="formError" th:if="${#fields.hasErrors('date')}"
-                  th:errors="*{#dates.format(date, 'dd-MMM-yyyy')}">Invalid date</span>
+                  th:errors="*{#dates.format(date, 'yyyy-MM-dd')}">Invalid date</span>
         </div>
 
         <label for="location">Location:</label>
@@ -34,7 +34,7 @@
         </div><br/>
 
         <div th:if="${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}">
-            <label for="location">Author:</label>
+            <label for="username">Author:</label>
             <select id="username" th:field="*{username}">
                 <option th:each="u : ${usernames}" th:value="${u}"
                         th:text="${u}">Authors</option>

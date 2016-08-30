@@ -9,7 +9,7 @@
     <main id="events">
         <div th:if="${#lists.size(allUpcomingEvents)} > 0">
             <h3>Upcoming events</h3>
-            <table class="table">
+            <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>Title</th>
@@ -42,7 +42,7 @@
         </div>
         <div th:if="${#lists.size(allPastEvents)} > 0">
             <h3>Past events</h3>
-            <table class="table">
+            <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>Title</th>

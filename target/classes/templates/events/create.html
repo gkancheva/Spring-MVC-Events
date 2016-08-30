@@ -22,7 +22,8 @@
             </div>
 
             <label for="date">Date of the event:</label>
-            <div><input id="date" type="text" name="date" th:value="*{date}" />
+            <div class="form-group">
+                <input id="date" type="date" name="date" th:value="*{date}" />
                 <span class="formError" th:if="${#fields.hasErrors('date')}"
                       th:errors="*{date}">Invalid date</span>
             </div>

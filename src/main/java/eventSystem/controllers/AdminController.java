@@ -117,6 +117,10 @@ public class AdminController {
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User admin = (User)httpSession.getAttribute(LOGGED_USER);
             if(admin.getRole().equals(ROLE_ADMIN)) {
+                if(admin.getId() == id) {
+                    notificationService.addErrorMessage("You are trying to delete your own account.");
+                    return "redirect:/users";
+                }
                 if(userService.findById(id).getEvents().size() > 0) {
                     List<Event> events = eventService.findEventsOfSpecUser(id);
                     for (int i = 0; i < events.size(); i++) {

@@ -37,6 +37,7 @@ public class EventServiceJPAImpl implements EventService{
     public List<Event> findPast() {
         return this.eventRepo.findOrdered()
                 .stream().filter(x -> x.getDate().before(new Date()))
+                .sorted((a, b) -> b.getDate().compareTo(a.getDate()))
                 .collect(Collectors.toList());
     }
 

@@ -106,7 +106,6 @@ public class EventController {
 
     @RequestMapping(value = "/events/create", method = RequestMethod.POST)
     public String validateAndCreateEvent(@Valid CreateNewEventForm cf, BindingResult br, HttpSession httpSession) {
-        //TODO: Change the type="text" with type="date" to show the calendar window
         if(httpSession.getAttribute(LOGGED_USER) != null) {
             User user = (User) httpSession.getAttribute(LOGGED_USER);
             if(br.hasErrors()) {

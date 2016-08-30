@@ -17,7 +17,7 @@ public class EditEventForm {
     private String description;
 
     @NotNull(message = "The date may not be null.")
-    @DateTimeFormat(pattern = "dd-MMM-yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
     @NotNull(message = "The location may not be null.")

@@ -5,36 +5,53 @@
 <head th:fragment="site-head">
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="../public/css/styles.css" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" href="../public/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
     <link rel="icon" href="../public/img/favicon.ico" th:href="@{/img/favicon.ico}" />
     <script src="../public/js/jquery-3.1.0.min.js"
             th:src="@{/js/jquery-3.1.0.min.js}"></script>
     <script src="../public/js/event-scripts.js" th:src="@{/js/event-scripts.js}"></script>
+    <script src="../public/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+    <script src="../public/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
     <meta th:include="this :: head" th:remove="tag"/>
 </head>
 
 <body>
 
-<header  th:fragment="site-header" th:remove="tag">
-    <header>
-        <a href="index.html" th:href="@{/}"><img
-                src="../public/img/site-logo-events.png" th:src="@{/img/site-logo-events.png}" /></a>
-        <a href="index.html" th:href="@{/}">Home</a>
-        <a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/login.html" th:href="@{/users/login}">Login</a>
-        <a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/register.html" th:href="@{/users/register}">Register</a>
-        <a href="events/index.html" th:href="@{/events}">Events</a>
-        <a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="events/create.html" th:href="@{/events/create}">Create Event</a>
-        <a th:if="${#httpSession.getAttribute('loggedUser') != null} and ${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}" href="users/admin/index.html" th:href="@{/users}">Users</a>
-        <div id="logged-in-info">
-            <span>Hello,
-                <b><span th:text="${#httpSession.getAttribute('loggedUser') != null} ?
-                 ${#httpSession.getAttribute('loggedUser').username} :
-                 ${'guest!'}"></span></b>
-            </span>
-            <form th:if="${#httpSession.getAttribute('loggedUser') != null}" th:action="@{/users/logout}" method="post">
-                <input type="submit" value="Logout"/>
-            </form>
+<header th:fragment="site-header" th:remove="tag">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavBar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-left" href="index.html" th:href="@{/}"><img src="../public/img/site-logo-events.png" th:src="@{/img/site-logo-events.png}" /></a>
+            </div>
         </div>
-    </header>
+        <div class="collapse navbar-collapse" id="myNavBar">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html" th:href="@{/}">Home</a></li>
+                <li><a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/login.html" th:href="@{/users/login}">Login</a></li>
+                <li><a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/register.html" th:href="@{/users/register}">Register</a></li>
+                <li><a href="events/index.html" th:href="@{/events}">Events</a></li>
+                <li><a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="events/create.html" th:href="@{/events/create}">Create Event</a></li>
+                <li><a th:if="${#httpSession.getAttribute('loggedUser') != null} and ${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}" href="users/admin/index.html" th:href="@{/users}">Users</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a>Hello, <b><span th:text="${#httpSession.getAttribute('loggedUser') != null} ?
+                     ${#httpSession.getAttribute('loggedUser').username} :
+                     ${'guest!'}"></span></b></a>
+                </li>
+                <li>
+                    <a><form th:if="${#httpSession.getAttribute('loggedUser') != null}" th:action="@{/users/logout}" method="post">
+                        <input type="submit" value="Logout"/>
+                    </form></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <ul id="messages" th:with="notifyMessages=${session[T(eventSystem.services
           .NotificationServiceImpl).NOTIFY_MSG_SESSION_KEY]}">
         <li th:each="msg : ${notifyMessages}"

@@ -7,34 +7,36 @@
 
 <body>
 <header th:replace="layout :: site-header" />
-<h2>User details for user #<span th:text="${user.id}"></span></h2>
-    <form class="edit-user" method="post">
+    <main>
+        <h3>User details for user #<span th:text="${user.id}"></span></h3>
+        <form class="edit-user" method="post">
 
-        <label for="username">Username:</label>
-        <div><input id="username" type="text" name="username" th:value="${user.username}" disabled="disabled"/>
-        </div>
+            <label for="username">Username:</label>
+            <div><input id="username" type="text" name="username" th:value="${user.username}" disabled="disabled"/>
+            </div>
 
-        <label for="fullName">Full name:</label>
-        <div><input id="fullName" type="text" name="fullName" th:value="${user.fullName}" disabled="disabled"/>
-        </div>
+            <label for="fullName">Full name:</label>
+            <div><input id="fullName" type="text" name="fullName" th:value="${user.fullName}" disabled="disabled"/>
+            </div>
 
-        <label for="eMail">E-mail:</label>
-        <div><input id="eMail" type="text" name="eMail" th:value="${user.eMail}" disabled="disabled"/>
-        </div>
+            <label for="eMail">E-mail:</label>
+            <div><input id="eMail" type="text" name="eMail" th:value="${user.eMail}" disabled="disabled"/>
+            </div>
 
-        <label for="role">Role:</label>
-        <div>
-            <select id="role" name="roleOption" th:field="${user.role}">
-                <option th:each="role : ${roles}" th:value="${role}"
-                        th:text="${role}">Roles</option>
-            </select>
-        </div><br/>
+            <label for="role">Role:</label>
+            <div>
+                <select class="dropdown" id="role" name="roleOption" th:field="${user.role}">
+                    <option th:each="role : ${roles}" th:value="${role}"
+                            th:text="${role}">Roles</option>
+                </select>
+            </div><br/>
 
-        <div><input type="submit" id="edit" value="Save"/>
-            <a href="#" th:href="@{/users}">[Cancel]</a>
-        </div>
+            <div><input type="submit" id="edit" value="Save"/>
+                <a href="#" th:href="@{/users}">[Cancel]</a>
+            </div>
 
-    </form>
+        </form>
+    </main>
 <footer th:replace="layout :: site-footer" />
 </body>
 
