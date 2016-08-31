@@ -23,7 +23,7 @@ public class AdminController {
     private static String ERROR_UNAUTHORIZED_USER = "You are not allowed to access this data.";
     private static String ERROR_NO_SUCH_USER = "Cannot find user with id #";
     private static String ERROR_USER_NOT_LOGGED_IN = "You are not logged in. Please login.";
-    private static String ERROR_DELETING_ADMIN = "You are trying to delete admin account.";
+    private static String ERROR_DELETING_ADMIN = "You are trying to delete or modify admin account.";
     private static String ROLE_ADMIN = "ROLE_ADMIN";
     private static String ROLE_USER = "ROLE_USER";
     private static Long ADMIN_ID = (long)1;
@@ -78,15 +78,20 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.POST)
-    public String editUser(@PathVariable("id") Long id, Model m, EditUserForm euf, HttpSession httpSession) {
+    public String editUser(@PathVariable("id") Long userId, Model m, EditUserForm euf, HttpSession httpSession) {
         if(userService.isLoggedIn(httpSession)) {
             if(userService.isAdmin(httpSession)) {
-                User user = userService.findById(id);
-                user.setRole(euf.getRole());
-                userService.edit(user);
-                notificationService.addInfoMessage("User with id #" + id + " has been successfully modified.");
-                m.addAttribute("users", userService.findAll());
-                return "/users/admin/index";
+                User loggedUser = (User)httpSession.getAttribute(LOGGED_USER);
+                if(userId != loggedUser.getId()) {
+                    User user = userService.findById(userId);
+                    user.setRole(euf.getRole());
+                    userService.edit(user);
+                    notificationService.addInfoMessage("User with id #" + userId + " has been successfully modified.");
+                    m.addAttribute("users", userService.findAll());
+                    return "/users/admin/index";
+                }
+                notificationService.addErrorMessage(ERROR_DELETING_ADMIN);
+                return "redirect:/users";
             }
         }
         notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
@@ -119,9 +124,9 @@ public class AdminController {
     @RequestMapping(value = "users/delete/{id}", method = RequestMethod.POST)
     public String deleteUser(@PathVariable("id") Long userId, HttpSession httpSession) {
         if(userService.isLoggedIn(httpSession)) {
-            User admin = (User)httpSession.getAttribute(LOGGED_USER);
+            User loggedUser = (User)httpSession.getAttribute(LOGGED_USER);
             if(userService.isAdmin(httpSession)) {
-                if(admin.getId() == ADMIN_ID) {
+                if(userId == ADMIN_ID || userId == loggedUser.getId()) {
                     notificationService.addErrorMessage(ERROR_DELETING_ADMIN);
                     return "redirect:/users";
                 }

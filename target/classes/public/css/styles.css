@@ -17,7 +17,10 @@
 }
 
 body>main {
-    padding: 0 15px;
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0  10px 0 10px;
 }
 
 body>main h2 {
@@ -29,8 +32,7 @@ body>main>aside {
     float: right;
     width: 220px;
     background: #F3F3F3;
-    padding: 0 15px;
-    margin-left: 20px;
+    padding: 10px;
 }
 
 body>main>aside a {
@@ -52,9 +54,10 @@ body>main:after {
 ul#messages li {
     display: block;
     width: 80%;
-    margin: 5px auto;
+    max-width: 768px;
+    margin: 0 auto;
     text-align: center;
-    padding: 5px 10px;
+    padding: 5px;
     border-radius: 5px;
 }
 

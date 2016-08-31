@@ -12,16 +12,18 @@
 
     <div class="single-element">
         <form method="post" th:object="${loginForm}">
+
             <div><label for="username">Username:</label></div>
-            <div><input id="username" type="text" name="username" th:value="*{username}" />
-                <span class="formError" th:if="${#fields.hasErrors('username')}"
-                      th:errors="*{username}">Invalid username</span>
-            </div>
+            <div><span class="formError" th:if="${#fields.hasErrors('username')}"
+                       th:errors="*{username}">Invalid username</span></div>
+            <div><input id="username" type="text" name="username" th:value="*{username}" /></div>
+
             <div><label for="password" th:value="*{username}">Password:</label></div>
-            <div><input id="password" type="password" name="password" th:value="*{password}" />
-                <span class="formError" th:if="${#fields.hasErrors('password')}"
+            <div><span class="formError" th:if="${#fields.hasErrors('password')}"
                       th:errors="*{password}">Invalid password</span>
-            </div><br/>
+            </div>
+            <div><input id="password" type="password" name="password" th:value="*{password}" /></div><br/>
+
             <div><input type="submit" value="Login"/>
                 <a href="register.html" th:href="@{/users/register}">[Go to Register]</a></div>
         </form>
