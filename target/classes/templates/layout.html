@@ -33,11 +33,22 @@
         <div class="collapse navbar-collapse" id="myNavBar">
             <ul class="nav navbar-nav">
                 <li><a href="index.html" th:href="@{/}">Home</a></li>
-                <li><a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/login.html" th:href="@{/users/login}">Login</a></li>
-                <li><a th:if="${#httpSession.getAttribute('loggedUser') == null}" href="users/register.html" th:href="@{/users/register}">Register</a></li>
                 <li><a href="events/index.html" th:href="@{/events}">Events</a></li>
-                <li><a th:if="${#httpSession.getAttribute('loggedUser') != null}" href="events/create.html" th:href="@{/events/create}">Create Event</a></li>
-                <li><a th:if="${#httpSession.getAttribute('loggedUser') != null} and ${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}" href="users/admin/index.html" th:href="@{/users}">Users</a></li>
+                <li>
+                    <a th:if="${#httpSession.getAttribute('loggedUser') == null}"
+                       href="users/login.html" th:href="@{/users/login}">Login</a>
+                </li>
+                <li>
+                    <a th:if="${#httpSession.getAttribute('loggedUser') == null}"
+                       href="users/register.html" th:href="@{/users/register}">Register</a>
+                </li>
+                <li>
+                    <a th:if="${#httpSession.getAttribute('loggedUser') != null}"
+                       href="events/create.html" th:href="@{/events/create}">Create Event</a></li>
+                <li>
+                    <a th:if="${#httpSession.getAttribute('loggedUser') != null} and ${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}"
+                       href="users/admin/index.html" th:href="@{/users}">Users</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a>Hello, <b><span th:text="${#httpSession.getAttribute('loggedUser') != null} ?

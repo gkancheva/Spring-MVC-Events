@@ -30,7 +30,7 @@ public class Event {
 
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean isPublic = true;
+    private boolean isPublic;
 
     public Event() {
     }

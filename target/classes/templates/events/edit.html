@@ -22,7 +22,8 @@
         </div>
 
         <label for="date">Date of the event:</label>
-        <div><input id="date" type="date" name="date" th:value="${#dates.format(editEventForm.date, 'yyyy-MM-dd')}" />
+        <div>
+            <input id="date" type="date" onkeydown="false" name="date" th:value="${#dates.format(editEventForm.date, 'yyyy-MM-dd')}"/>
             <span class="formError" th:if="${#fields.hasErrors('date')}"
                   th:errors="*{#dates.format(date, 'yyyy-MM-dd')}">Invalid date</span>
         </div>
@@ -31,10 +32,15 @@
         <div><input id="location" type="text" name="location" th:value="*{location}" />
             <span class="formError" th:if="${#fields.hasErrors('location')}"
                   th:errors="*{location}">Invalid location</span>
-        </div><br/>
+        </div>
+
+        <div>
+            <label for="isPublic">Public event:</label>
+            <input id="isPublic" type="checkbox" name="isPublic" th:field="*{isPublic}"/>
+        </div>
 
         <div th:if="${#httpSession.getAttribute('loggedUser').role == 'ROLE_ADMIN'}">
-            <label for="username">Author:</label>
+            <label for="username">Author:</label><br/>
             <select id="username" th:field="*{username}">
                 <option th:each="u : ${usernames}" th:value="${u}"
                         th:text="${u}">Authors</option>

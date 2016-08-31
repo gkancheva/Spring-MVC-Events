@@ -12,35 +12,41 @@
     background: #A9A9A9 ;
 }
 
-body>main {
-    padding: 0px 15px;
+.navbar-left {
+    margin-left: 10px;
 }
 
-body>aside {
-    float: right;
-    width: 200px;
+body>main {
+    padding: 0 15px;
+}
+
+body>main h2 {
+    padding: 5px 5px 5px 10px;
     background: #F3F3F3;
-    padding: 15px;
+}
+
+body>main>aside {
+    float: right;
+    width: 220px;
+    background: #F3F3F3;
+    padding: 0 15px;
     margin-left: 20px;
 }
 
-body>aside h2 {
-    margin: 0px 0px 15px 0px;
+body>main>aside a {
+    display: block;
+    margin: 5px 0;
 }
 
-body>aside a {
-    display: block;
-    margin: 5px 0px;
+.form-center {
+    text-align: center;
+    margin: 0 auto;
 }
 
 body>main:after {
     content: '';
     display: block;
     clear: both;
-}
-
-body>main>h2 {
-    background: #F3F3F3;
 }
 
 ul#messages li {
@@ -54,7 +60,7 @@ ul#messages li {
 
 ul#messages li.info {
     background: #c4ee7e;
-    color: darkgreen;
+    color: #1c6432;
 }
 
 ul#messages li.error {
@@ -69,7 +75,7 @@ ul#messages li.error {
 }
 
 body>footer {
-    background: #eee;
+    background: #F3F3F3;
     padding: 5px;
     margin: 10px 0;
     text-align: center;

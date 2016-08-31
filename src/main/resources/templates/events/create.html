@@ -22,8 +22,8 @@
             </div>
 
             <label for="date">Date of the event:</label>
-            <div class="form-group">
-                <input id="date" type="date" name="date" th:value="*{date}" />
+            <div>
+                <input id="date" type="date" onkeydown="false" name="date" th:value="*{date}" />
                 <span class="formError" th:if="${#fields.hasErrors('date')}"
                       th:errors="*{date}">Invalid date</span>
             </div>
@@ -32,6 +32,11 @@
             <div><input id="location" type="text" name="location" th:value="*{location}" />
                 <span class="formError" th:if="${#fields.hasErrors('location')}"
                       th:errors="*{location}">Invalid location</span>
+            </div>
+
+            <div>
+                <label for="isPublic">Public event:</label>
+                <input id="isPublic" type="checkbox" name="isPublic" th:field="*{isPublic}"/>
             </div><br/>
 
             <div><input type="submit" value="Create"/>

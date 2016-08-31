@@ -7,58 +7,62 @@
 
 <body>
     <header th:replace="layout :: site-header" />
-    <aside>
-        <h3>All Upcoming Events</h3>
-        <a href="#" th:each="e : ${allUpcomingEvents}" th:text="${e.title}"
-           th:href="@{/events/view/{id}/(id=${e.id})}">Event title</a>
-    </aside>
     <main id="events">
-
-        <h2>Upcoming events</h2>
-        <article th:each="e : ${upcoming5events}">
-            <h3 class="title">
-                <a href="#"  th:text="${e.title}" th:href="@{/events/view/{id}/(id=${e.id})}"></a>
-            </h3>
-            <div class="date">
-                <i>Date of event:</i>
-                <span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span>
-            </div>
-            <div class="location">
-                <i>Location:</i>
-                <span th:text="${e.location}">Event location</span>
-            </div>
-            <div class="organizer">
-                <i>Organized by:</i>
-                <span th:text="${e.author.fullName}">Event organizer</span>
-            </div><br/>
-            <p class="content">
+        <aside>
+            <h3>Dashboard</h3>
+            <a href="#" th:each="e : ${upcoming10events}" th:text="${e.title}"
+               th:href="@{/events/view/{id}/(id=${e.id})}">Event title</a>
+        </aside>
+        <div>
+            <h2>Upcoming events</h2>
+            <article th:each="e : ${upcoming5events}">
+                <h3 class="title">
+                    <a href="#"  th:text="${e.title}" th:href="@{/events/view/{id}/(id=${e.id})}"></a>
+                </h3>
+                <div class="date">
+                    <i>Date of event:</i>
+                    <span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span>
+                </div>
+                <div class="location">
+                    <i>Location:</i>
+                    <span th:text="${e.location}">Event location</span>
+                </div>
+                <div class="organizer">
+                    <i>Organized by:</i>
+                    <span th:text="${e.author.fullName}">Event organizer</span>
+                </div><br/>
+                <p class="content">
                 <span th:text="${#strings.length(e.description) > 400} ?
                  ${#strings.substring(e.description, 0, 400) + '...'} :
                  ${e.description}">Description</span>
-                <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">Read more</a>
-            </p>
-        </article>
+                    <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">Read more</a>
+                </p>
+            </article>
 
-        <h2>Past events</h2>
-        <article th:each="e : ${past3events}">
-            <h3 class="title" th:text="${e.title}">Event Title</h3>
-            <div class="date">
-                <i>Date of event:</i>
-                <span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span>
-            </div>
-            <div class="location">
-                <i>Location:</i>
-                <span th:text="${e.location}">Event location</span>
-            </div>
-            <div class="organizer">
-                <i>Organized by:</i>
-                <span th:text="${e.author.fullName}">Event organizer</span>
-            </div>
-            <p class="content">
-                <span th:text="${#strings.substring(e.description, 0, 150)} + '...'">Description</span>
-                <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">Read more</a>
-            </p>
-        </article>
+            <h2>Past events</h2>
+            <article th:each="e : ${past3events}">
+                <h3 class="title">
+                    <a href="#"  th:text="${e.title}" th:href="@{/events/view/{id}/(id=${e.id})}"></a>
+                </h3>
+                <div class="date">
+                    <i>Date of event:</i>
+                    <span th:text="${#dates.format(e.date, 'dd-MMM-yyyy')}">22-May-2016</span>
+                </div>
+                <div class="location">
+                    <i>Location:</i>
+                    <span th:text="${e.location}">Event location</span>
+                </div>
+                <div class="organizer">
+                    <i>Organized by:</i>
+                    <span th:text="${e.author.fullName}">Event organizer</span>
+                </div>
+                <p class="content">
+                    <span th:text="${#strings.substring(e.description, 0, 150)} + '...'">Description</span>
+                    <a href="#" th:href="@{/events/view/{id}/(id=${e.id})}">Read more</a>
+                </p>
+            </article>
+        </div>
+
     </main>
     <footer th:replace="layout :: site-footer" />
 </body>

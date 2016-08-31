@@ -3,6 +3,7 @@ package eventSystem.forms.event;
 import eventSystem.models.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -24,6 +25,16 @@ public class CreateNewEventForm {
     private String location;
 
     private User author;
+
+    private boolean isPublic;
+
+    public boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
 
     public String getTitle() {
         return title;

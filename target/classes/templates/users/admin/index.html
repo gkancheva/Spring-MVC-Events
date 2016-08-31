@@ -29,8 +29,10 @@
                 <td th:text="${user.eMail}">E-mail</td>
                 <td th:text="${user.role}">Role</td>
                 <td>
-                    <a href="#" th:href="@{/users/{id}/(id=${user.id})}">[Edit]</a>
-                    <a href="#" th:if="${user.id != #httpSession.getAttribute('loggedUser').id}" th:href="@{/users/delete/{id}/(id=${user.id})}">[Delete]</a>
+                    <div th:if="${user.id != #httpSession.getAttribute('loggedUser').id} and ${user.id != 1}">
+                        <a href="#" th:href="@{/users/{id}/(id=${user.id})}">[Edit]</a>
+                        <a href="#" th:href="@{/users/delete/{id}/(id=${user.id})}">[Delete]</a>
+                    </div>
                 </td>
                 <td>
                     <a href="#" th:if="${#lists.size(user.events) > 0}" th:href="@{/events/{id}/(id=${user.id})}">View events</a>

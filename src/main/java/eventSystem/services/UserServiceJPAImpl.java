@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
 @Primary
 public class UserServiceJPAImpl implements UserService{
+    private static String LOGGED_USER = "loggedUser";
+    private static String ROLE_ADMIN = "ROLE_ADMIN";
+
     @Autowired
     private UserRepository userRepo;
 
@@ -61,5 +65,22 @@ public class UserServiceJPAImpl implements UserService{
     @Override
     public void deleteById(Long id) {
         this.userRepo.delete(id);
+    }
+
+    @Override
+    public boolean isAdmin(HttpSession httpSession) {
+        User user = (User)httpSession.getAttribute(LOGGED_USER);
+        if(user.getRole().equals(ROLE_ADMIN)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isLoggedIn(HttpSession httpSession) {
+        if(httpSession.getAttribute(LOGGED_USER) != null) {
+            return true;
+        }
+        return false;
     }
 }

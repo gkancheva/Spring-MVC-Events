@@ -23,8 +23,10 @@ public class AdminController {
     private static String ERROR_UNAUTHORIZED_USER = "You are not allowed to access this data.";
     private static String ERROR_NO_SUCH_USER = "Cannot find user with id #";
     private static String ERROR_USER_NOT_LOGGED_IN = "You are not logged in. Please login.";
+    private static String ERROR_DELETING_ADMIN = "You are trying to delete admin account.";
     private static String ROLE_ADMIN = "ROLE_ADMIN";
     private static String ROLE_USER = "ROLE_USER";
+    private static Long ADMIN_ID = (long)1;
 
     @Autowired
     private UserService userService;
@@ -37,9 +39,8 @@ public class AdminController {
 
     @RequestMapping(value = "/users")
     public String showUsers(Model m, HttpSession httpSession) {
-        if(httpSession.getAttribute(LOGGED_USER) != null) {
-            User user = (User)httpSession.getAttribute(LOGGED_USER);
-            if(user.getRole().equals(ROLE_ADMIN)) {
+        if(userService.isLoggedIn(httpSession)) {
+            if(userService.isAdmin(httpSession)) {
                 m.addAttribute("users", userService.findAll());
                 return "/users/admin/index";
             }
@@ -53,16 +54,18 @@ public class AdminController {
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public String showEditUserPage(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
-        if(httpSession.getAttribute(LOGGED_USER) != null) {
-            User admin = (User)httpSession.getAttribute(LOGGED_USER);
-            if(admin.getRole().equals(ROLE_ADMIN)) {
+        if(userService.isLoggedIn(httpSession)) {
+            if(userService.isAdmin(httpSession)) {
                 User user = userService.findById(id);
                 if(user == null) {
                     notificationService.addErrorMessage(ERROR_NO_SUCH_USER + id);
                     return "/users/index";
                 }
+                if(user.getId() == 1) {
+                    notificationService.addErrorMessage("You cannot modify admin user.");
+                    return "redirect:/users";
+                }
                 m.addAttribute("user", user);
-                m.addAttribute(LOGGED_USER, admin);
                 List<String> roles = new ArrayList<>();
                 roles.add(ROLE_ADMIN);
                 roles.add(ROLE_USER);
@@ -76,14 +79,12 @@ public class AdminController {
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.POST)
     public String editUser(@PathVariable("id") Long id, Model m, EditUserForm euf, HttpSession httpSession) {
-        if(httpSession.getAttribute(LOGGED_USER) != null) {
-            User admin = (User)httpSession.getAttribute(LOGGED_USER);
-            if(admin.getRole().equals(ROLE_ADMIN)) {
+        if(userService.isLoggedIn(httpSession)) {
+            if(userService.isAdmin(httpSession)) {
                 User user = userService.findById(id);
                 user.setRole(euf.getRole());
                 userService.edit(user);
                 notificationService.addInfoMessage("User with id #" + id + " has been successfully modified.");
-                m.addAttribute(LOGGED_USER, admin);
                 m.addAttribute("users", userService.findAll());
                 return "/users/admin/index";
             }
@@ -94,16 +95,19 @@ public class AdminController {
 
     @RequestMapping(value = "/users/delete/{id}", method = RequestMethod.GET)
     public String showDeleteUserPage(@PathVariable("id") Long id, Model m, HttpSession httpSession) {
-        if(httpSession.getAttribute(LOGGED_USER) != null) {
-            User admin = (User)httpSession.getAttribute(LOGGED_USER);
-            if(admin.getRole().equals(ROLE_ADMIN)){
+        if(userService.isLoggedIn(httpSession)) {
+            if(userService.isAdmin(httpSession)){
                 User userToDelete = userService.findById(id);
-                if(userToDelete == null) {
-                    notificationService.addErrorMessage(ERROR_NO_SUCH_USER);
+                if(userToDelete.getId() == ADMIN_ID) {
+                    notificationService.addErrorMessage(ERROR_DELETING_ADMIN);
                     return "redirect:/users";
                 }
-                m.addAttribute("user", userToDelete);
-                return "users/admin/delete";
+                if(userToDelete != null) {
+                    m.addAttribute("user", userToDelete);
+                    return "users/admin/delete";
+                }
+                notificationService.addErrorMessage(ERROR_NO_SUCH_USER);
+                return "redirect:/users";
             }
             notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
             return "redirect:/";
@@ -113,22 +117,22 @@ public class AdminController {
     }
 
     @RequestMapping(value = "users/delete/{id}", method = RequestMethod.POST)
-    public String deleteUser(@PathVariable("id") Long id, HttpSession httpSession) {
-        if(httpSession.getAttribute(LOGGED_USER) != null) {
+    public String deleteUser(@PathVariable("id") Long userId, HttpSession httpSession) {
+        if(userService.isLoggedIn(httpSession)) {
             User admin = (User)httpSession.getAttribute(LOGGED_USER);
-            if(admin.getRole().equals(ROLE_ADMIN)) {
-                if(admin.getId() == id) {
-                    notificationService.addErrorMessage("You are trying to delete your own account.");
+            if(userService.isAdmin(httpSession)) {
+                if(admin.getId() == ADMIN_ID) {
+                    notificationService.addErrorMessage(ERROR_DELETING_ADMIN);
                     return "redirect:/users";
                 }
-                if(userService.findById(id).getEvents().size() > 0) {
-                    List<Event> events = eventService.findEventsOfSpecUser(id);
+                if(userService.findById(userId).getEvents().size() > 0) {
+                    List<Event> events = eventService.findEventsOfSpecUser(userId);
                     for (int i = 0; i < events.size(); i++) {
                         eventService.deleteById(events.get(i).getId());
                     }
                 }
-                userService.deleteById(id);
-                notificationService.addInfoMessage("User #" + id + " has been successfully deleted!");
+                userService.deleteById(userId);
+                notificationService.addInfoMessage("User #" + userId + " has been successfully deleted!");
                 return "redirect:/users";
             }
             notificationService.addErrorMessage(ERROR_UNAUTHORIZED_USER);
